@@ -1,0 +1,78 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rnd_proj/core/datasources/firebase/drinks_firebase_service.dart';
+import 'package:rnd_proj/core/datasources/firebase/notification_service.dart';
+import 'package:rnd_proj/core/models/minuman_model.dart';
+import 'package:rnd_proj/core/models/minuman_transaksi_model.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
+
+final drinksServiceProvider = Provider<DrinksFirebaseService>((ref) {
+  return DrinksFirebaseService();
+});
+
+final minumanStreamProvider = StreamProvider<List<MinumanModel>>((ref) {
+  final service = ref.watch(drinksServiceProvider);
+  return service.streamMinuman();
+});
+
+final minumanTransaksiStreamProvider =
+    StreamProvider<List<MinumanTransaksiModel>>((ref) {
+  final service = ref.watch(drinksServiceProvider);
+  return service.streamMinumanTransaksi();
+});
+
+class DrinksNotifier extends StateNotifier<AsyncValue<void>> {
+  final DrinksFirebaseService _service;
+
+  DrinksNotifier(this._service) : super(const AsyncValue.data(null));
+
+  Future<bool> sellDrink({
+    required MinumanModel minuman,
+    required int qty,
+    String userId = '',
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      final total = minuman.harga * qty;
+      final newStock = minuman.stok - qty;
+
+      // 1. Reduce stock
+      await _service.updateStock(minuman.id, newStock);
+
+      // 2. Save transaksi minuman
+      await _service.addMinumanTransaksi(MinumanTransaksiModel(
+        id: '',
+        minumanId: minuman.id,
+        qty: qty,
+        total: total,
+        tanggal: DateTime.now(),
+      ));
+
+      // 3. Insert transaksi keuangan
+      await _service.addTransaksiKeuangan(jumlah: total, userId: userId);
+
+      // 4. Check low stock and notify
+      if (newStock < AppConstants.lowStockThreshold) {
+        try {
+          await NotificationService().showNotification(
+            title: 'Stok Rendah! ⚠️',
+            body: 'Stok ${minuman.nama} tinggal $newStock. Segera restok!',
+          );
+        } catch (_) {
+          // Notification might fail
+        }
+      }
+
+      state = const AsyncValue.data(null);
+      return true;
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      return false;
+    }
+  }
+}
+
+final drinksNotifierProvider =
+    StateNotifierProvider<DrinksNotifier, AsyncValue<void>>((ref) {
+  final service = ref.watch(drinksServiceProvider);
+  return DrinksNotifier(service);
+});

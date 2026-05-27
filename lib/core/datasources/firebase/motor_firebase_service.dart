@@ -1,0 +1,71 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rnd_proj/core/models/motor_model.dart';
+import 'package:rnd_proj/core/models/motor_sewa_model.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
+
+class MotorFirebaseService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Stream<List<MotorModel>> streamMotor() {
+    return _firestore
+        .collection(AppConstants.motorCollection)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => MotorModel.fromFirestore(doc)).toList());
+  }
+
+  Stream<List<MotorModel>> streamAvailableMotor() {
+    return _firestore
+        .collection(AppConstants.motorCollection)
+        .where('status', isEqualTo: AppConstants.statusTersedia)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => MotorModel.fromFirestore(doc)).toList());
+  }
+
+  Future<void> updateMotorStatus(String motorId, String status) async {
+    await _firestore
+        .collection(AppConstants.motorCollection)
+        .doc(motorId)
+        .update({'status': status});
+  }
+
+  Future<String> addMotorSewa(MotorSewaModel sewa) async {
+    final doc = await _firestore
+        .collection(AppConstants.motorSewaCollection)
+        .add(sewa.toFirestore());
+    return doc.id;
+  }
+
+  Stream<List<MotorSewaModel>> streamMotorSewa() {
+    return _firestore
+        .collection(AppConstants.motorSewaCollection)
+        .orderBy('tanggal', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => MotorSewaModel.fromFirestore(doc))
+            .toList());
+  }
+
+  Future<void> updateMotorSewaStatus(String id, String status) async {
+    await _firestore
+        .collection(AppConstants.motorSewaCollection)
+        .doc(id)
+        .update({'status': status});
+  }
+
+  Future<void> addTransaksiKeuangan({
+    required double jumlah,
+    String userId = '',
+  }) async {
+    await _firestore
+        .collection(AppConstants.transaksiKeuanganCollection)
+        .add({
+      'kategori': AppConstants.kategoriMotor,
+      'jumlah': jumlah,
+      'tipe': 'income',
+      'tanggal': Timestamp.now(),
+      'user_id': userId,
+    });
+  }
+}
