@@ -55,13 +55,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         );
 
     if (!success && mounted) {
+      final authState = ref.read(authNotifierProvider);
+      final errorMsg = authState.whenOrNull(
+        error: (e, _) => e.toString().contains('email-not-verified') 
+            ? 'Silakan verifikasi email Anda terlebih dahulu.' 
+            : 'Email atau password salah',
+      ) ?? 'Email atau password salah';
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Row(
+          content: Row(
             children: [
-              Icon(Icons.error_outline, color: Colors.white, size: 20),
-              SizedBox(width: 8),
-              Text('Email atau password salah'),
+              const Icon(Icons.error_outline, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Expanded(child: Text(errorMsg)),
             ],
           ),
           backgroundColor: AppTheme.errorColor,

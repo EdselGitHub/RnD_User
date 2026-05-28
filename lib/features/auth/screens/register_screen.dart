@@ -88,7 +88,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
               children: [
                 Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
                 SizedBox(width: 8),
-                Expanded(child: Text('Akun berhasil dibuat! Selamat datang 🎉')),
+                Expanded(child: Text('Registrasi berhasil! Link verifikasi telah dikirim ke email Anda. Silakan cek kotak masuk/spam email Anda untuk verifikasi.')),
               ],
             ),
             backgroundColor: AppTheme.successColor,

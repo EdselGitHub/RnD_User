@@ -500,6 +500,7 @@ class _ReservationFormTabState extends ConsumerState<_ReservationFormTab> {
                     noHp: _hpCtrl.text.trim(),
                     kartuIdentitas: imageUrl,
                     roomId: _selectedRoomId!,
+                    roomName: _selectedRoom!.nama,
                     checkin: _checkin,
                     checkout: _checkout,
                     totalHarga: _total,

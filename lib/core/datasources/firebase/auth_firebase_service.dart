@@ -30,6 +30,11 @@ class AuthFirebaseService {
       final user = credential.user;
       if (user == null) throw Exception('Login gagal: user null');
 
+      if (!user.emailVerified) {
+        await _auth.signOut();
+        throw Exception('email-not-verified');
+      }
+
       // Get user data from Firestore
       try {
         final doc = await _firestore
@@ -84,6 +89,9 @@ class AuthFirebaseService {
       final user = credential.user;
       if (user == null) throw Exception('Registrasi gagal: user null');
 
+      // Send verification email
+      await user.sendEmailVerification();
+
       // Update display name
       try {
         await user.updateDisplayName(name);
@@ -108,6 +116,9 @@ class AuthFirebaseService {
         debugPrint('Error saving to Firestore: $e');
         throw Exception('Gagal menyimpan data user ke database: $e');
       }
+
+      // Sign out user after registration so they have to verify and log in
+      await _auth.signOut();
 
       return newUser;
     } on FirebaseAuthException catch (e) {

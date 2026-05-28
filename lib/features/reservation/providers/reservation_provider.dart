@@ -69,6 +69,7 @@ class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
     required String noHp,
     required String kartuIdentitas,
     required String roomId,
+    required String roomName,
     required DateTime checkin,
     required DateTime checkout,
     required double totalHarga,
@@ -105,6 +106,7 @@ class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
       // 4. Insert transaksi keuangan
       await _service.addTransaksiKeuangan(
         kategori: AppConstants.kategoriKamar,
+        deskripsi: 'Penjualan kamar $roomName',
         jumlah: totalHarga,
         tipe: 'income',
         userId: userId,
