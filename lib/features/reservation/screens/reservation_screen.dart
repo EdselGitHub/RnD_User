@@ -6,7 +6,7 @@ import 'package:rnd_proj/core/entities/ruangan_entity.dart';
 import 'package:rnd_proj/features/reservation/providers/reservation_provider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:rnd_proj/core/services/cloudinary_services.dart';
+import 'package:rnd_proj/core/services/storage_service.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 import 'package:rnd_proj/features/payment/screens/payment_screen.dart';
 import 'package:rnd_proj/widgets/shared_widgets.dart';
@@ -325,21 +325,52 @@ class _ReservationFormTabState extends ConsumerState<_ReservationFormTab> {
   final _namaCtrl = TextEditingController();
   final _hpCtrl = TextEditingController();
 
-  File? _idCardImage;
+  XFile? _idCardImage;
   final _imagePicker = ImagePicker();
   bool _isUploading = false;
 
   String? _selectedRoomId;
   RuanganEntity? _selectedRoom;
   String _tipePesanan = 'bulanan';
-  DateTime _checkin = DateTime.now();
-  DateTime _checkout = DateTime.now().add(const Duration(days: 30));
+  DateTime _checkin = DateUtils.dateOnly(DateTime.now());
+  late DateTime _checkout = DateUtils.dateOnly(DateTime.now()).add(const Duration(days: 30));
 
-  Future<void> _pickImage() async {
-    final picked = await _imagePicker.pickImage(source: ImageSource.camera);
+  Future<void> _pickImage(ImageSource source) async {
+    final picked = await _imagePicker.pickImage(source: source);
     if (picked != null) {
-      setState(() => _idCardImage = File(picked.path));
+      setState(() => _idCardImage = picked);
     }
+  }
+
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined),
+              title: const Text('Ambil dari Kamera'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('Pilih dari Galeri'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -365,35 +396,45 @@ class _ReservationFormTabState extends ConsumerState<_ReservationFormTab> {
   double get _total {
     if (_selectedRoom == null) return 0;
     
-    int days = _checkout.difference(_checkin).inDays;
+    final cIn = DateUtils.dateOnly(_checkin);
+    final cOut = DateUtils.dateOnly(_checkout);
+    int days = cOut.difference(cIn).inDays;
     if (days <= 0) days = 1;
 
-    if (_tipePesanan == 'harian') {
-      return _selectedRoom!.harga * days;
-    } else if (_tipePesanan == 'mingguan') {
-      int weeks = (days / 7).ceil();
-      if (weeks <= 0) weeks = 1;
-      return _selectedRoom!.hargaMingguan * weeks;
-    } else {
-      int months = (days / 30).ceil();
-      if (months <= 0) months = 1;
-      return _selectedRoom!.hargaBulanan * months;
+    double totalPrice = 0;
+    int remainingNights = days;
+
+    if (_selectedRoom!.hargaBulanan > 0 && remainingNights >= 30) {
+      final months = remainingNights ~/ 30;
+      totalPrice += months * _selectedRoom!.hargaBulanan;
+      remainingNights %= 30;
     }
+
+    if (_selectedRoom!.hargaMingguan > 0 && remainingNights >= 7) {
+      final weeks = remainingNights ~/ 7;
+      totalPrice += weeks * _selectedRoom!.hargaMingguan;
+      remainingNights %= 7;
+    }
+
+    totalPrice += remainingNights * _selectedRoom!.harga;
+
+    return totalPrice;
   }
 
   Future<void> _pickDate(bool isCheckin) async {
+    final now = DateUtils.dateOnly(DateTime.now());
     final d = await showDatePicker(
       context: context,
       initialDate: isCheckin ? _checkin : _checkout,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
     );
     if (d != null) {
       setState(() {
         if (isCheckin) {
           _checkin = d;
           if (_tipePesanan == 'bulanan') {
-            _checkout = DateTime(_checkin.year, _checkin.month + 1, _checkin.day);
+            _checkout = _checkin.add(const Duration(days: 30));
           } else if (_tipePesanan == 'mingguan') {
             _checkout = _checkin.add(const Duration(days: 7));
           } else if (_checkout.isBefore(_checkin)) {
@@ -434,7 +475,7 @@ class _ReservationFormTabState extends ConsumerState<_ReservationFormTab> {
 
     setState(() => _isUploading = true);
 
-    String? imageUrl = await CloudinaryService.uploadImage(_idCardImage!);
+    String? imageUrl = await StorageService.uploadKartuIdentitas(_idCardImage!);
 
     if (imageUrl == null) {
       if (mounted) {
@@ -558,7 +599,7 @@ class _ReservationFormTabState extends ConsumerState<_ReservationFormTab> {
                 ),
                 const SizedBox(height: 8),
                 InkWell(
-                  onTap: _pickImage,
+                  onTap: _showImagePickerOptions,
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     width: double.infinity,
@@ -571,7 +612,7 @@ class _ReservationFormTabState extends ConsumerState<_ReservationFormTab> {
                     child: _idCardImage != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.file(_idCardImage!, fit: BoxFit.cover),
+                            child: Image.file(File(_idCardImage!.path), fit: BoxFit.cover),
                           )
                         : const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -650,8 +691,7 @@ class _ReservationFormTabState extends ConsumerState<_ReservationFormTab> {
                       if (v != null) {
                         setState(() {
                           _tipePesanan = v;
-                          _checkout = DateTime(
-                              _checkin.year, _checkin.month + 1, _checkin.day);
+                          _checkout = _checkin.add(const Duration(days: 30));
                         });
                       }
                     },

@@ -84,6 +84,8 @@ class ReservationFirebaseService {
     required double jumlah,
     required String tipe,
     String userId = '',
+    String? deskripsi,
+    String? kartuIdentitas,
   }) async {
     await _firestore
         .collection(AppConstants.transaksiKeuanganCollection)
@@ -93,6 +95,8 @@ class ReservationFirebaseService {
       'tipe': tipe,
       'tanggal': Timestamp.now(),
       'user_id': userId,
+      if (deskripsi != null) 'deskripsi': deskripsi,
+      if (kartuIdentitas != null) 'kartu_identitas': kartuIdentitas,
     });
   }
 }

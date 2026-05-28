@@ -9,14 +9,44 @@ final reservationServiceProvider = Provider<ReservationFirebaseService>((ref) {
   return ReservationFirebaseService();
 });
 
-final ruanganStreamProvider = StreamProvider<List<RuanganModel>>((ref) {
+final ruanganStreamProvider = StreamProvider<List<RuanganModel>>((ref) async* {
   final service = ref.watch(reservationServiceProvider);
-  return service.streamRuangan();
+  final reservationsAsync = ref.watch(reservasiStreamProvider);
+
+  await for (final roomsData in service.streamRuangan()) {
+    var rooms = roomsData.where((r) => r.status != 'dihapus').toList();
+
+    if (reservationsAsync is AsyncData) {
+      final reservations = reservationsAsync.value!;
+      final now = DateTime.now();
+
+      rooms = rooms.map((room) {
+        if (room.status == 'maintenance') return room;
+
+        bool isOccupiedNow = reservations.any((res) {
+          if (res.status != AppConstants.statusAktif) return false;
+          if (res.roomId != room.id) return false;
+          return now.compareTo(res.checkin) >= 0 && now.compareTo(res.checkout) < 0;
+        });
+
+        String finalStatus = AppConstants.statusTersedia;
+        if (isOccupiedNow || room.status == 'tidak tersedia' || room.status == AppConstants.statusTerisi) {
+          finalStatus = AppConstants.statusTerisi;
+        }
+
+        return room.copyWith(
+          status: finalStatus,
+        );
+      }).toList();
+    }
+    yield rooms;
+  }
 });
 
-final availableRoomsProvider = StreamProvider<List<RuanganModel>>((ref) {
-  final service = ref.watch(reservationServiceProvider);
-  return service.streamAvailableRooms();
+final availableRoomsProvider = Provider<AsyncValue<List<RuanganModel>>>((ref) {
+  return ref.watch(ruanganStreamProvider).whenData(
+        (rooms) => rooms.where((r) => r.status == AppConstants.statusTersedia).toList(),
+      );
 });
 
 final reservasiStreamProvider = StreamProvider<List<ReservasiModel>>((ref) {
@@ -78,6 +108,7 @@ class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
         jumlah: totalHarga,
         tipe: 'income',
         userId: userId,
+        kartuIdentitas: kartuIdentitas,
       );
 
       state = const AsyncValue.data(null);

@@ -12,13 +12,14 @@ import 'package:rnd_proj/features/laundry/screens/laundry_screen.dart';
 import 'package:rnd_proj/features/room_services/screens/room_service_screen.dart';
 import 'package:rnd_proj/features/drinks/screens/drinks_screen.dart';
 import 'package:rnd_proj/features/history/order_history_screen.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 
 /// Tracks whether Firebase was successfully initialized
 bool firebaseInitialized = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id_ID', null);
 
   try {
     await Firebase.initializeApp(

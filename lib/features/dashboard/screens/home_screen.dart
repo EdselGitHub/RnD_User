@@ -5,6 +5,7 @@ import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 import 'package:rnd_proj/features/dashboard/models/room_type_model.dart';
 import 'package:rnd_proj/features/dashboard/screens/room_type_detail_screen.dart';
+import 'package:rnd_proj/features/realtime_test_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -448,6 +449,20 @@ class HomeScreen extends ConsumerWidget {
                         gradient: const [Color(0xFF10B981), Color(0xFF34D399)],
                         onTap: () => Navigator.pushNamed(context, '/history'),
                       ),
+                      // _MenuCard(
+                      //   icon: Icons.speed_rounded,
+                      //   title: 'Realtime\nTest',
+                      //   subtitle: 'Uji sinkronisasi',
+                      //   gradient: const [Color(0xFFF43F5E), Color(0xFFFB7185)],
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => const RealtimeTestScreen(),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                 ],

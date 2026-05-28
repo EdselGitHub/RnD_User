@@ -8,14 +8,43 @@ final motorServiceProvider = Provider<MotorFirebaseService>((ref) {
   return MotorFirebaseService();
 });
 
-final motorStreamProvider = StreamProvider<List<MotorModel>>((ref) {
+final motorStreamProvider = StreamProvider<List<MotorModel>>((ref) async* {
   final service = ref.watch(motorServiceProvider);
-  return service.streamMotor();
+  final rentalsAsync = ref.watch(motorSewaStreamProvider);
+
+  await for (final motorsData in service.streamMotor()) {
+    var motors = motorsData.where((m) => m.status != 'dihapus').toList();
+
+    if (rentalsAsync is AsyncData) {
+      final rentals = rentalsAsync.value!;
+      final now = DateTime.now();
+
+      motors = motors.map((motor) {
+        if (motor.status == 'maintenance') return motor;
+
+        bool isOccupiedNow = rentals.any((rental) {
+          if (rental.status != AppConstants.statusAktif) return false;
+          if (rental.motorId != motor.id) return false;
+          
+          final days = (rental.hargaPerhari > 0) ? (rental.total / rental.hargaPerhari).round() : 1;
+          final tanggalSelesai = rental.tanggal.add(Duration(days: days));
+          
+          return now.compareTo(rental.tanggal) >= 0 && now.compareTo(tanggalSelesai) < 0;
+        });
+
+        return motor.copyWith(
+          status: isOccupiedNow ? AppConstants.statusDisewa : AppConstants.statusTersedia,
+        );
+      }).toList();
+    }
+    yield motors;
+  }
 });
 
-final availableMotorProvider = StreamProvider<List<MotorModel>>((ref) {
-  final service = ref.watch(motorServiceProvider);
-  return service.streamAvailableMotor();
+final availableMotorProvider = Provider<AsyncValue<List<MotorModel>>>((ref) {
+  return ref.watch(motorStreamProvider).whenData(
+        (motors) => motors.where((m) => m.status == AppConstants.statusTersedia).toList(),
+      );
 });
 
 final motorSewaStreamProvider = StreamProvider<List<MotorSewaModel>>((ref) {
@@ -33,6 +62,7 @@ class MotorNotifier extends StateNotifier<AsyncValue<void>> {
     required String tamuId,
     required double hargaPerhari,
     required double total,
+    DateTime? tanggal,
     String userId = '',
   }) async {
     state = const AsyncValue.loading();
@@ -41,7 +71,7 @@ class MotorNotifier extends StateNotifier<AsyncValue<void>> {
         id: '',
         motorId: motorId,
         tamuId: tamuId,
-        tanggal: DateTime.now(),
+        tanggal: tanggal ?? DateTime.now(),
         pembuatan: DateTime.now(),
         hargaPerhari: hargaPerhari,
         total: total,
