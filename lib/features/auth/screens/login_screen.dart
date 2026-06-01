@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
-import 'package:rnd_proj/features/auth/screens/register_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -318,11 +318,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const RegisterScreen(),
-                              ),
-                            );
+                            context.push('/register');
                           },
                           child: const Text(
                             'Daftar',

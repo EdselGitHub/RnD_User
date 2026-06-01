@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/room_service_firebase_service.dart';
 import 'package:rnd_proj/core/datasources/firebase/notification_service.dart';
@@ -13,16 +14,19 @@ final roomServiceStreamProvider = StreamProvider<List<RoomServiceModel>>((ref) {
   return service.streamRoomService();
 });
 
-class RoomServiceNotifier extends StateNotifier<AsyncValue<void>> {
-  final RoomServiceFirebaseService _service;
+class RoomServiceNotifier extends AsyncNotifier<void> {
+  RoomServiceFirebaseService get _service => ref.read(roomServiceServiceProvider);
 
-  RoomServiceNotifier(this._service) : super(const AsyncValue.data(null));
+  @override
+  FutureOr<void> build() {
+    return null;
+  }
 
   Future<bool> addRoomService({
     required String roomId,
     required DateTime jadwal,
   }) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       await _service.addRoomService(RoomServiceModel(
         id: '',
@@ -42,29 +46,28 @@ class RoomServiceNotifier extends StateNotifier<AsyncValue<void>> {
         // Notification might fail on some devices, don't block the operation
       }
 
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 
   Future<bool> markAsComplete(String id) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       await _service.updateRoomServiceStatus(id, AppConstants.statusSelesai);
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 }
 
 final roomServiceNotifierProvider =
-    StateNotifierProvider<RoomServiceNotifier, AsyncValue<void>>((ref) {
-  final service = ref.watch(roomServiceServiceProvider);
-  return RoomServiceNotifier(service);
+    AsyncNotifierProvider<RoomServiceNotifier, void>(() {
+  return RoomServiceNotifier();
 });

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 import 'package:rnd_proj/features/dashboard/models/room_type_model.dart';
-import 'package:rnd_proj/features/dashboard/screens/room_type_detail_screen.dart';
-import 'package:rnd_proj/features/realtime_test_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -14,83 +12,6 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authNotifierProvider);
     final userName = authState.isLoading ? '...' : (authState.valueOrNull?.name ?? 'Tamu');
-
-
-// insert test performance
-      //   return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     final stopwatch = Stopwatch()..start();
-      //     try {
-      //       await FirebaseFirestore.instance.collection('performance_test').add({
-      //         'test_data': 'Hello Firebase',
-      //         'created_at': FieldValue.serverTimestamp(),
-      //       });
-      //       stopwatch.stop();
-      //       final msg = '✅ Waktu Insert: ${stopwatch.elapsedMilliseconds} ms';
-      //       debugPrint(msg);
-      //       if (context.mounted) {
-      //         ScaffoldMessenger.of(context).showSnackBar(
-      //           SnackBar(
-      //             content: Text(msg),
-      //             backgroundColor: AppTheme.successColor,
-      //           ),
-      //         );
-      //       }
-      //     } catch (e) {
-      //       final msg = '❌ Error saat insert: $e';
-      //       debugPrint(msg);
-      //       if (context.mounted) {
-      //         ScaffoldMessenger.of(context).showSnackBar(
-      //           SnackBar(
-      //             content: Text(msg),
-      //             backgroundColor: AppTheme.errorColor,
-      //           ),
-      //         );
-      //       }
-      //     }
-      //   },
-      //   backgroundColor: AppTheme.primaryColor,
-      //   tooltip: 'Test Firebase Insert Performance',
-      //   child: const Icon(Icons.speed, color: Colors.white),
-      // ),
-
-
-// fetch test performance
-    // return Scaffold(
-    //   floatingActionButton: FloatingActionButton(
-    //     onPressed: () async {
-    //       final stopwatch = Stopwatch()..start();
-    //       try {
-    //         await FirebaseFirestore.instance.collection('performance_test').get();
-    //         stopwatch.stop();
-    //         final msg = '✅ Waktu Fetch: ${stopwatch.elapsedMilliseconds} ms';
-    //         debugPrint(msg);
-    //         if (context.mounted) {
-    //           ScaffoldMessenger.of(context).showSnackBar(
-    //             SnackBar(
-    //               content: Text(msg),
-    //               backgroundColor: AppTheme.successColor,
-    //             ),
-    //           );
-    //         }
-    //       } catch (e) {
-    //         final msg = '❌ Error saat fetch: $e';
-    //         debugPrint(msg);
-    //         if (context.mounted) {
-    //           ScaffoldMessenger.of(context).showSnackBar(
-    //             SnackBar(
-    //               content: Text(msg),
-    //               backgroundColor: AppTheme.errorColor,
-    //             ),
-    //           );
-    //         }
-    //       }
-    //     },
-    //     backgroundColor: AppTheme.primaryColor,
-    //     tooltip: 'Test Firebase Fetch Performance',
-    //     child: const Icon(Icons.speed, color: Colors.white),
-    //   ),
 
     return Scaffold(
       body: CustomScrollView(
@@ -289,12 +210,7 @@ class HomeScreen extends ConsumerWidget {
                       final room = roomTypesData[index];
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RoomTypeDetailScreen(roomType: room),
-                            ),
-                          );
+                          context.push('/room-type-detail', extra: room);
                         },
                         child: Container(
                           width: 300,
@@ -412,42 +328,42 @@ class HomeScreen extends ConsumerWidget {
                         title: 'Reservasi\nKamar',
                         subtitle: 'Pesan kamar',
                         gradient: const [Color(0xFF1A6B52), Color(0xFF2D9B75)],
-                        onTap: () => Navigator.pushNamed(context, '/reservation'),
+                        onTap: () => context.push('/reservation'),
                       ),
                       _MenuCard(
                         icon: Icons.two_wheeler_rounded,
                         title: 'Sewa\nMotor',
                         subtitle: 'Jelajahi Bali',
                         gradient: const [Color(0xFFE8A838), Color(0xFFF5C563)],
-                        onTap: () => Navigator.pushNamed(context, '/motor'),
+                        onTap: () => context.push('/motor'),
                       ),
                       _MenuCard(
                         icon: Icons.local_laundry_service_rounded,
                         title: 'Laundry',
                         subtitle: 'Layanan cuci',
                         gradient: const [Color(0xFF3B82F6), Color(0xFF60A5FA)],
-                        onTap: () => Navigator.pushNamed(context, '/laundry'),
+                        onTap: () => context.push('/laundry'),
                       ),
                       _MenuCard(
                         icon: Icons.cleaning_services_rounded,
                         title: 'Room\nService',
                         subtitle: 'Bersihkan kamar',
                         gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
-                        onTap: () => Navigator.pushNamed(context, '/room-service'),
+                        onTap: () => context.push('/room-service'),
                       ),
                       _MenuCard(
                         icon: Icons.local_cafe_rounded,
                         title: 'Pesan\nMinuman',
                         subtitle: 'Menu minuman',
                         gradient: const [Color(0xFFE06356), Color(0xFFEF8A7E)],
-                        onTap: () => Navigator.pushNamed(context, '/drinks'),
+                        onTap: () => context.push('/drinks'),
                       ),
                       _MenuCard(
                         icon: Icons.receipt_long_rounded,
                         title: 'Riwayat\nPesanan',
                         subtitle: 'Lihat transaksi',
                         gradient: const [Color(0xFF10B981), Color(0xFF34D399)],
-                        onTap: () => Navigator.pushNamed(context, '/history'),
+                        onTap: () => context.push('/history'),
                       ),
                       // _MenuCard(
                       //   icon: Icons.speed_rounded,

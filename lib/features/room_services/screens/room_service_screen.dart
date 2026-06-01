@@ -294,32 +294,10 @@ class _RoomServiceRequestTabState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Info banner
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: const Color(0xFF8B5CF6).withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: const Color(0xFF8B5CF6).withValues(alpha: 0.2),
-              ),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.info_outline_rounded,
-                    color: Color(0xFF8B5CF6), size: 20),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Pilih kamar Anda dan jadwal pembersihan yang diinginkan',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF8B5CF6),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          const InfoBanner(
+            message: 'Pilih kamar Anda dan jadwal pembersihan yang diinginkan',
+            icon: Icons.info_outline_rounded,
+            color: Color(0xFF8B5CF6),
           ),
           const SizedBox(height: 20),
 

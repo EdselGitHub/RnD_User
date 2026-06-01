@@ -5,13 +5,7 @@ import 'package:rnd_proj/firebase_options.dart';
 import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 import 'package:rnd_proj/features/auth/screens/login_screen.dart';
-import 'package:rnd_proj/features/dashboard/screens/home_screen.dart';
-import 'package:rnd_proj/features/reservation/screens/reservation_screen.dart';
-import 'package:rnd_proj/features/motor/screens/motor_screen.dart';
-import 'package:rnd_proj/features/laundry/screens/laundry_screen.dart';
-import 'package:rnd_proj/features/room_services/screens/room_service_screen.dart';
-import 'package:rnd_proj/features/drinks/screens/drinks_screen.dart';
-import 'package:rnd_proj/features/history/order_history_screen.dart';
+import 'package:rnd_proj/core/routes/app_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 /// Tracks whether Firebase was successfully initialized
@@ -39,43 +33,37 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // If Firebase is not initialized, show LoginScreen
-    // (it will show error on login attempt which is fine)
-    Widget homeWidget;
-
     if (!firebaseInitialized) {
-      homeWidget = const LoginScreen();
-    } else {
-      final authState = ref.watch(authStateProvider);
-      homeWidget = authState.when(
-        data: (user) {
-          if (user != null) {
-            return const HomeScreen();
-          }
-          return const LoginScreen();
-        },
-        loading: () => const Scaffold(
+      return MaterialApp(
+        title: 'RnD Dewi Sri Bali',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        home: const LoginScreen(),
+      );
+    }
+
+    final authState = ref.watch(authStateProvider);
+
+    if (authState.isLoading) {
+      return MaterialApp(
+        title: 'RnD Dewi Sri Bali',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        home: const Scaffold(
           body: Center(
             child: CircularProgressIndicator(color: AppTheme.primaryColor),
           ),
         ),
-        error: (_, __) => const LoginScreen(),
       );
     }
 
-    return MaterialApp(
+    final router = ref.watch(routerProvider);
+
+    return MaterialApp.router(
       title: 'RnD Dewi Sri Bali',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: homeWidget,
-      routes: {
-        '/reservation': (context) => const ReservationScreen(),
-        '/motor': (context) => const MotorScreen(),
-        '/laundry': (context) => const LaundryScreen(),
-        '/room-service': (context) => const RoomServiceScreen(),
-        '/drinks': (context) => const DrinksScreen(),
-        '/history': (context) => const OrderHistoryScreen(),
-      },
+      routerConfig: router,
     );
   }
 }

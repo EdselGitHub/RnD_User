@@ -301,32 +301,10 @@ class _LaundryFormTabState extends ConsumerState<_LaundryFormTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Info banner
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppTheme.infoColor.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: AppTheme.infoColor.withValues(alpha: 0.2),
-                ),
-              ),
-              child: const Row(
-                children: [
-                  Icon(Icons.info_outline_rounded,
-                      color: AppTheme.infoColor, size: 20),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      'Pilih jenis layanan, isi nama dan nomor kamar Anda',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppTheme.infoColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            const InfoBanner(
+              message: 'Pilih jenis layanan, isi nama dan nomor kamar Anda',
+              icon: Icons.info_outline_rounded,
+              color: AppTheme.infoColor,
             ),
             const SizedBox(height: 20),
 

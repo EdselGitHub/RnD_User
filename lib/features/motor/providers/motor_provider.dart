@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/motor_firebase_service.dart';
 import 'package:rnd_proj/core/models/motor_model.dart';
@@ -52,10 +53,13 @@ final motorSewaStreamProvider = StreamProvider<List<MotorSewaModel>>((ref) {
   return service.streamMotorSewa();
 });
 
-class MotorNotifier extends StateNotifier<AsyncValue<void>> {
-  final MotorFirebaseService _service;
+class MotorNotifier extends AsyncNotifier<void> {
+  MotorFirebaseService get _service => ref.read(motorServiceProvider);
 
-  MotorNotifier(this._service) : super(const AsyncValue.data(null));
+  @override
+  FutureOr<void> build() {
+    return null;
+  }
 
   Future<bool> createMotorSewa({
     required String motorId,
@@ -65,7 +69,7 @@ class MotorNotifier extends StateNotifier<AsyncValue<void>> {
     DateTime? tanggal,
     String userId = '',
   }) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       await _service.addMotorSewa(MotorSewaModel(
         id: '',
@@ -81,23 +85,23 @@ class MotorNotifier extends StateNotifier<AsyncValue<void>> {
       await _service.updateMotorStatus(motorId, AppConstants.statusDisewa);
       await _service.addTransaksiKeuangan(jumlah: total, userId: userId);
 
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 
   Future<bool> returnMotor(String sewaId, String motorId) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       await _service.updateMotorSewaStatus(sewaId, AppConstants.statusSelesai);
       await _service.updateMotorStatus(motorId, AppConstants.statusTersedia);
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
@@ -116,7 +120,6 @@ class MotorNotifier extends StateNotifier<AsyncValue<void>> {
 }
 
 final motorNotifierProvider =
-    StateNotifierProvider<MotorNotifier, AsyncValue<void>>((ref) {
-  final service = ref.watch(motorServiceProvider);
-  return MotorNotifier(service);
+    AsyncNotifierProvider<MotorNotifier, void>(() {
+  return MotorNotifier();
 });

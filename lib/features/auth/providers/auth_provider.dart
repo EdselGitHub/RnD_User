@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rnd_proj/core/datasources/firebase/auth_firebase_service.dart';
@@ -17,59 +18,46 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) {
   return authService.getCurrentUserData();
 });
 
-class AuthNotifier extends StateNotifier<AsyncValue<UserModel?>> {
-  final AuthFirebaseService _authService;
+class AuthNotifier extends AsyncNotifier<UserModel?> {
+  AuthFirebaseService get _authService => ref.read(authServiceProvider);
 
-  AuthNotifier(this._authService) : super(const AsyncValue.loading()) {
-    _init();
-  }
-
-  Future<void> _init() async {
-    try {
-      final user = await _authService.getCurrentUserData();
-      if (mounted) {
-        state = AsyncValue.data(user);
-      }
-    } catch (e, st) {
-      if (mounted) {
-        state = AsyncValue.error(e, st);
-      }
-    }
+  @override
+  FutureOr<UserModel?> build() async {
+    return _authService.getCurrentUserData();
   }
 
   Future<bool> signIn(String email, String password) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       final user = await _authService.signInWithEmailPassword(email, password);
-      state = AsyncValue.data(user);
+      state = AsyncData(user);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 
   Future<bool> signUp(String name, String email, String password) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       final user = await _authService.signUpWithEmailPassword(
           name, email, password);
-      state = AsyncValue.data(user);
+      state = AsyncData(user);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 
   Future<void> signOut() async {
     await _authService.signOut();
-    state = const AsyncValue.data(null);
+    state = const AsyncData(null);
   }
 }
 
 final authNotifierProvider =
-    StateNotifierProvider<AuthNotifier, AsyncValue<UserModel?>>((ref) {
-  final authService = ref.watch(authServiceProvider);
-  return AuthNotifier(authService);
+    AsyncNotifierProvider<AuthNotifier, UserModel?>(() {
+  return AuthNotifier();
 });

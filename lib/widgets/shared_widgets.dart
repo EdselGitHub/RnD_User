@@ -213,3 +213,46 @@ class ErrorDisplayWidget extends StatelessWidget {
     );
   }
 }
+
+class InfoBanner extends StatelessWidget {
+  final String message;
+  final IconData icon;
+  final Color color;
+
+  const InfoBanner({
+    super.key,
+    required this.message,
+    this.icon = Icons.info_outline_rounded,
+    this.color = AppTheme.infoColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                fontSize: 12,
+                color: color,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

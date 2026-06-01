@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/laundry_firebase_service.dart';
 import 'package:rnd_proj/core/models/laundry_model.dart';
@@ -12,10 +13,13 @@ final laundryStreamProvider = StreamProvider<List<LaundryModel>>((ref) {
   return service.streamLaundry();
 });
 
-class LaundryNotifier extends StateNotifier<AsyncValue<void>> {
-  final LaundryFirebaseService _service;
+class LaundryNotifier extends AsyncNotifier<void> {
+  LaundryFirebaseService get _service => ref.read(laundryServiceProvider);
 
-  LaundryNotifier(this._service) : super(const AsyncValue.data(null));
+  @override
+  FutureOr<void> build() {
+    return null;
+  }
 
   Future<bool> addLaundry({
     required String tamuId,
@@ -25,7 +29,7 @@ class LaundryNotifier extends StateNotifier<AsyncValue<void>> {
     required double harga,
     String userId = '',
   }) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       await _service.addLaundry(LaundryModel(
         id: '',
@@ -39,29 +43,28 @@ class LaundryNotifier extends StateNotifier<AsyncValue<void>> {
 
       await _service.addTransaksiKeuangan(jumlah: harga, userId: userId);
 
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 
   Future<bool> updateStatus(String id, String status) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       await _service.updateLaundryStatus(id, status);
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 }
 
 final laundryNotifierProvider =
-    StateNotifierProvider<LaundryNotifier, AsyncValue<void>>((ref) {
-  final service = ref.watch(laundryServiceProvider);
-  return LaundryNotifier(service);
+    AsyncNotifierProvider<LaundryNotifier, void>(() {
+  return LaundryNotifier();
 });

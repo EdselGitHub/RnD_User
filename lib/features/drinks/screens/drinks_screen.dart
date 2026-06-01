@@ -4,7 +4,7 @@ import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/drinks/providers/drinks_provider.dart';
 import 'package:rnd_proj/widgets/shared_widgets.dart';
-import 'package:rnd_proj/features/payment/screens/payment_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 import 'package:rnd_proj/core/models/minuman_model.dart';
 
@@ -246,26 +246,24 @@ class DrinksScreen extends ConsumerWidget {
               Navigator.pop(ctx);
               final hargaTotal = minuman.harga * qty;
               if (context.mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PaymentScreen(
-                      totalAmount: hargaTotal.toDouble(),
-                      onPaymentSuccess: () async {
-                        final success = await ref
-                            .read(drinksNotifierProvider.notifier)
-                            .sellDrink(
-                              minuman: minuman,
-                              qty: qty,
-                              userId: ref.read(authStateProvider).valueOrNull?.uid ?? '',
-                            );
-                        if (success && context.mounted) {
-                          Helpers.showSnackBar(
-                              context, 'Pesanan berhasil! Minuman segera diantar ☕');
-                        }
-                      },
-                    ),
-                  ),
+                context.push(
+                  '/payment',
+                  extra: {
+                    'totalAmount': hargaTotal.toDouble(),
+                    'onPaymentSuccess': () async {
+                      final success = await ref
+                          .read(drinksNotifierProvider.notifier)
+                          .sellDrink(
+                            minuman: minuman,
+                            qty: qty,
+                            userId: ref.read(authStateProvider).valueOrNull?.uid ?? '',
+                          );
+                      if (success && context.mounted) {
+                        Helpers.showSnackBar(
+                            context, 'Pesanan berhasil! Minuman segera diantar ☕');
+                      }
+                    },
+                  },
                 );
               }
             },

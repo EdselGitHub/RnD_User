@@ -159,41 +159,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   : null,
             ),
             const SizedBox(height: 12),
-
-            // // QRIS Option
-            // _PaymentMethodCard(
-            //   title: 'QRIS',
-            //   icon: Icons.qr_code_2,
-            //   isSelected: _selectedMethod == 'qris',
-            //   onTap: () => setState(() => _selectedMethod = 'qris'),
-            //   child: _selectedMethod == 'qris'
-            //       ? Padding(
-            //           padding: const EdgeInsets.only(top: 16.0),
-            //           child: Center(
-            //             child: Column(
-            //               children: [
-            //                 Container(
-            //                   width: 200,
-            //                   height: 200,
-            //                   decoration: BoxDecoration(
-            //                     color: Colors.white,
-            //                     borderRadius: BorderRadius.circular(12.0),
-            //                     border: Border.all(color: Colors.grey.shade300),
-            //                   ),
-            //                   child: const Icon(Icons.qr_code_2, size: 150, color: Colors.black87),
-            //                 ),
-            //                 const SizedBox(height: 12),
-            //                 const Text(
-            //                   'Scan QR Code di atas menggunakan aplikasi mobile banking atau e-wallet Anda.',
-            //                   textAlign: TextAlign.center,
-            //                   style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-            //         )
-            //       : null,
-            // ),
           ],
         ),
       ),

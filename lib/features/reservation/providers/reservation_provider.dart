@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/reservation_firebase_service.dart';
 import 'package:rnd_proj/core/models/tamu_model.dart';
@@ -59,10 +60,13 @@ final tamuStreamProvider = StreamProvider<List<TamuModel>>((ref) {
   return service.streamTamu();
 });
 
-class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
-  final ReservationFirebaseService _service;
+class ReservationNotifier extends AsyncNotifier<void> {
+  ReservationFirebaseService get _service => ref.read(reservationServiceProvider);
 
-  ReservationNotifier(this._service) : super(const AsyncValue.data(null));
+  @override
+  FutureOr<void> build() {
+    return null;
+  }
 
   Future<bool> createReservation({
     required String namaTamu,
@@ -75,7 +79,7 @@ class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
     required double totalHarga,
     String userId = '',
   }) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       // 1. Save tamu
       final tamuId = await _service.addTamu(TamuModel(
@@ -113,23 +117,23 @@ class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
         kartuIdentitas: kartuIdentitas,
       );
 
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 
   Future<bool> checkoutReservation(String reservasiId, String roomId) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       await _service.updateReservasiStatus(reservasiId, AppConstants.statusSelesai);
       await _service.updateRoomStatus(roomId, AppConstants.statusTersedia);
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
@@ -154,7 +158,6 @@ class ReservationNotifier extends StateNotifier<AsyncValue<void>> {
 }
 
 final reservationNotifierProvider =
-    StateNotifierProvider<ReservationNotifier, AsyncValue<void>>((ref) {
-  final service = ref.watch(reservationServiceProvider);
-  return ReservationNotifier(service);
+    AsyncNotifierProvider<ReservationNotifier, void>(() {
+  return ReservationNotifier();
 });

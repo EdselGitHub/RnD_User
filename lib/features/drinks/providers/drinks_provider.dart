@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/drinks_firebase_service.dart';
 import 'package:rnd_proj/core/datasources/firebase/notification_service.dart';
@@ -20,17 +21,20 @@ final minumanTransaksiStreamProvider =
   return service.streamMinumanTransaksi();
 });
 
-class DrinksNotifier extends StateNotifier<AsyncValue<void>> {
-  final DrinksFirebaseService _service;
+class DrinksNotifier extends AsyncNotifier<void> {
+  DrinksFirebaseService get _service => ref.read(drinksServiceProvider);
 
-  DrinksNotifier(this._service) : super(const AsyncValue.data(null));
+  @override
+  FutureOr<void> build() {
+    return null;
+  }
 
   Future<bool> sellDrink({
     required MinumanModel minuman,
     required int qty,
     String userId = '',
   }) async {
-    state = const AsyncValue.loading();
+    state = const AsyncLoading();
     try {
       final total = minuman.harga * qty;
       final newStock = minuman.stok - qty;
@@ -62,17 +66,16 @@ class DrinksNotifier extends StateNotifier<AsyncValue<void>> {
         }
       }
 
-      state = const AsyncValue.data(null);
+      state = const AsyncData(null);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      state = AsyncError(e, st);
       return false;
     }
   }
 }
 
 final drinksNotifierProvider =
-    StateNotifierProvider<DrinksNotifier, AsyncValue<void>>((ref) {
-  final service = ref.watch(drinksServiceProvider);
-  return DrinksNotifier(service);
+    AsyncNotifierProvider<DrinksNotifier, void>(() {
+  return DrinksNotifier();
 });
