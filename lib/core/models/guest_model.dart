@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rnd_proj/core/entities/tamu_entity.dart';
+import 'package:rnd_proj/core/entities/guest_entity.dart';
 
 class TamuModel extends TamuEntity {
   const TamuModel({

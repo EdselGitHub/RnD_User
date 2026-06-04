@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rnd_proj/core/entities/transaksi_keuangan_entity.dart';
+import 'package:rnd_proj/core/entities/finance_transaction_entity.dart';
 
 class TransaksiKeuanganModel extends TransaksiKeuanganEntity {
   const TransaksiKeuanganModel({

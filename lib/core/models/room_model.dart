@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rnd_proj/core/entities/ruangan_entity.dart';
+import 'package:rnd_proj/core/entities/room_entity.dart';
 
 class RuanganModel extends RuanganEntity {
   const RuanganModel({

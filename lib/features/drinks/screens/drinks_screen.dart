@@ -6,7 +6,7 @@ import 'package:rnd_proj/features/drinks/providers/drinks_provider.dart';
 import 'package:rnd_proj/widgets/shared_widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
-import 'package:rnd_proj/core/models/minuman_model.dart';
+import 'package:rnd_proj/core/models/drink_model.dart';
 
 class DrinksScreen extends ConsumerWidget {
   const DrinksScreen({super.key});

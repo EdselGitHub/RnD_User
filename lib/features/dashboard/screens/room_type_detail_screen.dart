@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rnd_proj/core/theme/app_theme.dart';
-import 'package:rnd_proj/features/dashboard/models/room_type_model.dart';
+import 'package:rnd_proj/core/models/room_type_model.dart';
 
 class RoomTypeDetailScreen extends StatelessWidget {
   final RoomTypeModel roomType;

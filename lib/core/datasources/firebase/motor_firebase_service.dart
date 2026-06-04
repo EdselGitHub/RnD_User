@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rnd_proj/core/models/motor_model.dart';
-import 'package:rnd_proj/core/models/motor_sewa_model.dart';
+import 'package:rnd_proj/core/models/motor_rental_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
 
 class MotorFirebaseService {

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/motor_firebase_service.dart';
 import 'package:rnd_proj/core/models/motor_model.dart';
-import 'package:rnd_proj/core/models/motor_sewa_model.dart';
+import 'package:rnd_proj/core/models/motor_rental_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
 
 final motorServiceProvider = Provider<MotorFirebaseService>((ref) {

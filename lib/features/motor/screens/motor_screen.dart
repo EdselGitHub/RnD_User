@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/features/motor/providers/motor_provider.dart';
-import 'package:rnd_proj/features/motor/widgets/motor_list_tab.dart';
-import 'package:rnd_proj/features/motor/widgets/motor_sewa_form_tab.dart';
+import 'package:rnd_proj/features/motor/screens/motor_list_tab.dart';
+import 'package:rnd_proj/features/motor/screens/motor_sewa_form_tab.dart';
 
 class MotorScreen extends ConsumerStatefulWidget {
   const MotorScreen({super.key});

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/reservation_firebase_service.dart';
-import 'package:rnd_proj/core/models/tamu_model.dart';
-import 'package:rnd_proj/core/models/ruangan_model.dart';
-import 'package:rnd_proj/core/models/reservasi_model.dart';
+import 'package:rnd_proj/core/models/guest_model.dart';
+import 'package:rnd_proj/core/models/room_model.dart';
+import 'package:rnd_proj/core/models/reservation_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
 
 final reservationServiceProvider = Provider<ReservationFirebaseService>((ref) {

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rnd_proj/core/models/transaksi_keuangan_model.dart';
+import 'package:rnd_proj/core/models/finance_transacton_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
 
 class FinanceFirebaseService {

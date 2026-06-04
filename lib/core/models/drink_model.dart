@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rnd_proj/core/entities/minuman_entity.dart';
+import 'package:rnd_proj/core/entities/drink_entity.dart';
 
 class MinumanModel extends MinumanEntity {
   const MinumanModel({

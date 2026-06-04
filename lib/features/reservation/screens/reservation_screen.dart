@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/features/reservation/providers/reservation_provider.dart';
-import 'package:rnd_proj/features/reservation/widgets/available_rooms_tab.dart';
-import 'package:rnd_proj/features/reservation/widgets/reservation_form_tab.dart';
+import 'package:rnd_proj/features/reservation/screens/available_rooms_tab.dart';
+import 'package:rnd_proj/features/reservation/screens/reservation_form_tab.dart';
 
 class ReservationScreen extends ConsumerStatefulWidget {
   const ReservationScreen({super.key});

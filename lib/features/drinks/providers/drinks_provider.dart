@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rnd_proj/core/datasources/firebase/drinks_firebase_service.dart';
 import 'package:rnd_proj/core/datasources/firebase/notification_service.dart';
-import 'package:rnd_proj/core/models/minuman_model.dart';
-import 'package:rnd_proj/core/models/minuman_transaksi_model.dart';
+import 'package:rnd_proj/core/models/drink_model.dart';
+import 'package:rnd_proj/core/models/drink_transaction_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
 
 final drinksServiceProvider = Provider<DrinksFirebaseService>((ref) {

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rnd_proj/core/entities/minuman_transaksi_entity.dart';
+import 'package:rnd_proj/core/entities/drink_transaction_entity.dart';
 
 class MinumanTransaksiModel extends MinumanTransaksiEntity {
   const MinumanTransaksiModel({
@@ -37,6 +37,22 @@ class MinumanTransaksiModel extends MinumanTransaksiEntity {
       qty: entity.qty,
       total: entity.total,
       tanggal: entity.tanggal,
+    );
+  }
+
+  MinumanTransaksiModel copyWith({
+    String? id,
+    String? minumanId,
+    int? qty,
+    double? total,
+    DateTime? tanggal,
+  }) {
+    return MinumanTransaksiModel(
+      id: id ?? this.id,
+      minumanId: minumanId ?? this.minumanId,
+      qty: qty ?? this.qty,
+      total: total ?? this.total,
+      tanggal: tanggal ?? this.tanggal,
     );
   }
 }

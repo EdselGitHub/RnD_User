@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
-import 'package:rnd_proj/core/entities/ruangan_entity.dart';
+import 'package:rnd_proj/core/entities/room_entity.dart';
 import 'package:rnd_proj/features/reservation/providers/reservation_provider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';

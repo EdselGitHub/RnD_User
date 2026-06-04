@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rnd_proj/core/entities/motor_sewa_entity.dart';
+import 'package:rnd_proj/core/entities/motor_rent_entity.dart';
 
 class MotorSewaModel extends MotorSewaEntity {
   const MotorSewaModel({

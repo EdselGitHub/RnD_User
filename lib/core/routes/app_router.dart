@@ -13,7 +13,7 @@ import 'package:rnd_proj/features/room_services/screens/room_service_screen.dart
 import 'package:rnd_proj/features/drinks/screens/drinks_screen.dart';
 import 'package:rnd_proj/features/history/order_history_screen.dart';
 import 'package:rnd_proj/features/payment/screens/payment_screen.dart';
-import 'package:rnd_proj/features/dashboard/models/room_type_model.dart';
+import 'package:rnd_proj/core/models/room_type_model.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
