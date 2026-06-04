@@ -3,6 +3,7 @@ class MotorSewaEntity {
   final String motorId;
   final String tamuId;
   final DateTime tanggal;
+  final DateTime tanggalKembali;
   final DateTime pembuatan;
   final double hargaPerhari;
   final double total;
@@ -13,6 +14,7 @@ class MotorSewaEntity {
     required this.motorId,
     required this.tamuId,
     required this.tanggal,
+    required this.tanggalKembali,
     required this.pembuatan,
     required this.hargaPerhari,
     required this.total,

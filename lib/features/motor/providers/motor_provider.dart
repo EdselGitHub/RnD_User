@@ -26,11 +26,9 @@ final motorStreamProvider = StreamProvider<List<MotorModel>>((ref) async* {
         bool isOccupiedNow = rentals.any((rental) {
           if (rental.status != AppConstants.statusAktif) return false;
           if (rental.motorId != motor.id) return false;
-          
-          final days = (rental.hargaPerhari > 0) ? (rental.total / rental.hargaPerhari).round() : 1;
-          final tanggalSelesai = rental.tanggal.add(Duration(days: days));
-          
-          return now.compareTo(rental.tanggal) >= 0 && now.compareTo(tanggalSelesai) < 0;
+
+          return now.compareTo(rental.tanggal) >= 0 &&
+              now.compareTo(rental.tanggalKembali) < 0;
         });
 
         return motor.copyWith(
@@ -66,7 +64,8 @@ class MotorNotifier extends AsyncNotifier<void> {
     required String tamuId,
     required double hargaPerhari,
     required double total,
-    DateTime? tanggal,
+    required DateTime tanggal,
+    required DateTime tanggalKembali,
     String userId = '',
   }) async {
     state = const AsyncLoading();
@@ -75,7 +74,8 @@ class MotorNotifier extends AsyncNotifier<void> {
         id: '',
         motorId: motorId,
         tamuId: tamuId,
-        tanggal: tanggal ?? DateTime.now(),
+        tanggal: tanggal,
+        tanggalKembali: tanggalKembali,
         pembuatan: DateTime.now(),
         hargaPerhari: hargaPerhari,
         total: total,
@@ -109,10 +109,8 @@ class MotorNotifier extends AsyncNotifier<void> {
   Future<void> autoCheckExpired(List<MotorSewaModel> rentals) async {
     final now = DateTime.now();
     for (final rental in rentals) {
-      final days = (rental.hargaPerhari > 0) ? (rental.total / rental.hargaPerhari).round() : 1;
-      final tanggalSelesai = rental.tanggal.add(Duration(days: days));
-      
-      if (rental.status == AppConstants.statusAktif && tanggalSelesai.isBefore(now)) {
+      if (rental.status == AppConstants.statusAktif &&
+          rental.tanggalKembali.isBefore(now)) {
         await returnMotor(rental.id, rental.motorId);
       }
     }

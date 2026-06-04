@@ -7,6 +7,7 @@ class MotorSewaModel extends MotorSewaEntity {
     required super.motorId,
     required super.tamuId,
     required super.tanggal,
+    required super.tanggalKembali,
     required super.pembuatan,
     required super.hargaPerhari,
     required super.total,
@@ -15,14 +16,29 @@ class MotorSewaModel extends MotorSewaEntity {
 
   factory MotorSewaModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    final tanggal = (data['tanggal'] as Timestamp).toDate();
+    final hargaPerhari = (data['harga_perhari'] ?? 150000).toDouble();
+    final total = (data['total'] ?? 0).toDouble();
+
+    // Backward-compatible: jika tanggal_kembali belum ada di dokumen lama,
+    // hitung dari tanggal + durasi berdasarkan total/hargaPerhari
+    DateTime tanggalKembali;
+    if (data['tanggal_kembali'] != null) {
+      tanggalKembali = (data['tanggal_kembali'] as Timestamp).toDate();
+    } else {
+      final days = (hargaPerhari > 0) ? (total / hargaPerhari).round() : 1;
+      tanggalKembali = tanggal.add(Duration(days: days));
+    }
+
     return MotorSewaModel(
       id: doc.id,
       motorId: data['motor_id'] ?? '',
       tamuId: data['tamu_id'] ?? '',
-      tanggal: (data['tanggal'] as Timestamp).toDate(),
+      tanggal: tanggal,
+      tanggalKembali: tanggalKembali,
       pembuatan: (data['pembuatan'] as Timestamp).toDate(),
-      hargaPerhari: (data['harga_perhari'] ?? 150000).toDouble(),
-      total: (data['total'] ?? 0).toDouble(),
+      hargaPerhari: hargaPerhari,
+      total: total,
       status: data['status'] ?? 'aktif',
     );
   }
@@ -32,6 +48,7 @@ class MotorSewaModel extends MotorSewaEntity {
       'motor_id': motorId,
       'tamu_id': tamuId,
       'tanggal': Timestamp.fromDate(tanggal),
+      'tanggal_kembali': Timestamp.fromDate(tanggalKembali),
       'pembuatan': Timestamp.fromDate(pembuatan),
       'harga_perhari': hargaPerhari,
       'total': total,
@@ -45,6 +62,7 @@ class MotorSewaModel extends MotorSewaEntity {
       motorId: entity.motorId,
       tamuId: entity.tamuId,
       tanggal: entity.tanggal,
+      tanggalKembali: entity.tanggalKembali,
       pembuatan: entity.pembuatan,
       hargaPerhari: entity.hargaPerhari,
       total: entity.total,
@@ -57,6 +75,7 @@ class MotorSewaModel extends MotorSewaEntity {
     String? motorId,
     String? tamuId,
     DateTime? tanggal,
+    DateTime? tanggalKembali,
     DateTime? pembuatan,
     double? hargaPerhari,
     double? total,
@@ -67,6 +86,7 @@ class MotorSewaModel extends MotorSewaEntity {
       motorId: motorId ?? this.motorId,
       tamuId: tamuId ?? this.tamuId,
       tanggal: tanggal ?? this.tanggal,
+      tanggalKembali: tanggalKembali ?? this.tanggalKembali,
       pembuatan: pembuatan ?? this.pembuatan,
       hargaPerhari: hargaPerhari ?? this.hargaPerhari,
       total: total ?? this.total,

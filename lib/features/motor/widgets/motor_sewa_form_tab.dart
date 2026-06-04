@@ -88,13 +88,11 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
     
     final isOverlap = rentals.any((res) {
       if (res.motorId != _selectedMotorId || res.status != AppConstants.statusAktif) return false;
-      
+
       final start1 = DateUtils.dateOnly(_startDate!);
       final end1 = DateUtils.dateOnly(_endDate!);
       final start2 = DateUtils.dateOnly(res.tanggal);
-      
-      final resDays = (res.hargaPerhari > 0) ? (res.total / res.hargaPerhari).round() : 1;
-      final end2 = DateUtils.dateOnly(res.tanggal.add(Duration(days: resDays)));
+      final end2 = DateUtils.dateOnly(res.tanggalKembali);
 
       return start1.isBefore(end2) && end1.isAfter(start2);
     });
@@ -109,6 +107,7 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
     final hargaPerhari = _motorPrice;
     final total = days * _motorPrice;
     final startDate = _startDate;
+    final endDate = _endDate;
     final userId = ref.read(authStateProvider).valueOrNull?.uid ?? '';
 
     if (mounted) {
@@ -123,7 +122,8 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
                       tamuId: tamuId,
                       hargaPerhari: hargaPerhari,
                       total: total,
-                      tanggal: startDate,
+                      tanggal: startDate!,
+                      tanggalKembali: endDate!,
                       userId: userId,
                     );
             if (success && mounted) {
