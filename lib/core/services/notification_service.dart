@@ -3,16 +3,16 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
-  factory NotificationService() => _instance;
-  NotificationService._internal();
+  factory NotificationService() => _instance; //setiap kali dipanggil NotificationService() mengembalikan _instance
+  NotificationService._internal(); // _internal untuk mutlak, tidak bisa diacak dari luar
 
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications =
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance; //menerima pesan push notification dari server firebase
+  final FlutterLocalNotificationsPlugin _localNotifications = //untuk nampiling notif pop up fisik
       FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
     //request permission
-    await _messaging.requestPermission(
+    await _messaging.requestPermission( //minta dialog persetujuan dulu di hp
       alert: true,
       badge: true,
       sound: true,
@@ -28,15 +28,15 @@ class NotificationService {
     );
     await _localNotifications.initialize(initSettings);
 
-    //handle foreground messages
+    //menangani notifikasi saat aplikasi terbuka foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showLocalNotification(message);
     });
 
-    //get FCM token
+    //mendapatkan FCM token
     final token = await _messaging.getToken();
     if (token != null) {
-      // You can save the token to Firestore if needed
+      // menyimpan token di Firestore
       // ignore: avoid_print
       print('FCM Token: $token');
     }

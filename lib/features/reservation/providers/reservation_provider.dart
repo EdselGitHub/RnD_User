@@ -38,12 +38,21 @@ final ruanganStreamProvider = StreamProvider<List<RuanganModel>>((ref) async* {
 
         bool isOccupiedNow = false;
         for (final res in reservations) {
-          if (res.status == AppConstants.statusAktif &&
-              res.roomId == room.id &&
-              now.compareTo(res.checkin) >= 0 &&
-              now.compareTo(res.checkout) < 0) {
-            isOccupiedNow = true;
-            break; // Jika sudah cocok, hentikan pencarian
+          if (res.status == AppConstants.statusAktif && res.roomId == room.id) {
+            final startOfMonth = DateTime(now.year, now.month, 1);
+            final endOfMonth = DateTime(now.year, now.month + 1, 1).subtract(const Duration(milliseconds: 1));
+            
+            final bool isCheckinInThisMonth = res.checkin.year == now.year && res.checkin.month == now.month;
+            final bool isCheckoutInThisMonth = res.checkout.year == now.year && res.checkout.month == now.month;
+            final bool spansCurrentMonth = res.checkin.isBefore(startOfMonth) && res.checkout.isAfter(endOfMonth);
+            
+            final bool isInCurrentMonth = isCheckinInThisMonth || isCheckoutInThisMonth || spansCurrentMonth;
+            final bool isCheckoutNotPassed = now.compareTo(res.checkout) < 0;
+
+            if (isInCurrentMonth && isCheckoutNotPassed) {
+              isOccupiedNow = true;
+              break; // Jika sudah cocok, hentikan pencarian
+            }
           }
         }
 

@@ -27,7 +27,9 @@ class ReservasiModel extends ReservasiEntity {
       checkout: (data['checkout'] as Timestamp).toDate(),
       total: (data['total'] ?? 0).toDouble(),
       status: (data['status'] as String? ?? 'aktif').trim().toLowerCase(),
-      createdAt: (data['created_at'] as Timestamp).toDate(),
+      createdAt: data['created_at'] != null
+          ? (data['created_at'] as Timestamp).toDate()
+          : DateTime.now(),
     );
   }
 

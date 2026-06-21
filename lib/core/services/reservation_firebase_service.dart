@@ -76,7 +76,7 @@ class ReservationFirebaseService {
   Stream<List<ReservasiModel>> streamReservasi() async* {
     final snapshots = _firestore
         .collection(AppConstants.reservasiCollection)
-        .orderBy('created_at', descending: true)
+        .orderBy('checkin', descending: true) //supaya bisa cek reservasi yang baru dibuat
         .snapshots();
     await for (final snapshot in snapshots) {
       final List<ReservasiModel> list = [];
