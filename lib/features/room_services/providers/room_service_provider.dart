@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/datasources/firebase/room_service_firebase_service.dart';
-import 'package:rnd_proj/core/datasources/firebase/notification_service.dart';
+import 'package:rnd_proj/core/services/room_service_firebase_service.dart';
+import 'package:rnd_proj/core/services/notification_service.dart';
 import 'package:rnd_proj/core/models/room_service_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
 
@@ -36,14 +36,14 @@ class RoomServiceNotifier extends AsyncNotifier<void> {
         createdAt: DateTime.now(),
       ));
 
-      // Send local notification
+      //mengirim notifikasi lokal
       try {
         await NotificationService().showNotification(
           title: 'Jadwal Room Service Baru',
           body: 'Room service dijadwalkan untuk kamar $roomId',
         );
       } catch (_) {
-        // Notification might fail on some devices, don't block the operation
+        //notifikasi bisa mungkin error
       }
 
       state = const AsyncData(null);

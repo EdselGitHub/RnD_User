@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/datasources/firebase/drinks_firebase_service.dart';
-import 'package:rnd_proj/core/datasources/firebase/notification_service.dart';
+import 'package:rnd_proj/core/services/drinks_firebase_service.dart';
+import 'package:rnd_proj/core/services/notification_service.dart';
 import 'package:rnd_proj/core/models/drink_model.dart';
 import 'package:rnd_proj/core/models/drink_transaction_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
@@ -39,10 +39,10 @@ class DrinksNotifier extends AsyncNotifier<void> {
       final total = minuman.harga * qty;
       final newStock = minuman.stok - qty;
 
-      // 1. Reduce stock
+      //kurangi stok
       await _service.updateStock(minuman.id, newStock);
 
-      // 2. Save transaksi minuman
+      //simpan transaksi minuman
       await _service.addMinumanTransaksi(MinumanTransaksiModel(
         id: '',
         minumanId: minuman.id,
@@ -51,10 +51,14 @@ class DrinksNotifier extends AsyncNotifier<void> {
         tanggal: DateTime.now(),
       ));
 
-      // 3. Insert transaksi keuangan
-      await _service.addTransaksiKeuangan(jumlah: total, userId: userId);
+      //Insert transaksi keuangan
+      await _service.addTransaksiKeuangan(
+        jumlah: total,
+        userId: userId,
+        deskripsi: 'Pembelian ${minuman.nama} ($qty botol)',
+      );
 
-      // 4. Check low stock and notify
+      //cek kalo stok low terus ngirim notif
       if (newStock < AppConstants.lowStockThreshold) {
         try {
           await NotificationService().showNotification(
@@ -62,7 +66,7 @@ class DrinksNotifier extends AsyncNotifier<void> {
             body: 'Stok ${minuman.nama} tinggal $newStock. Segera restok!',
           );
         } catch (_) {
-          // Notification might fail
+          //notifikasi bisa jadi gagal
         }
       }
 

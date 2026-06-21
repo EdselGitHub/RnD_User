@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 
@@ -62,7 +63,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
       return 'Tidak ada koneksi internet.';
     }
     
-    // Jika auth_firebase_service melempar pesan error custom
+    //jika auth_firebase_service melempar pesan error custom
     if (errorStr.startsWith('Exception: ')) {
       return errorStr.replaceFirst('Exception: ', '');
     }
@@ -81,7 +82,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
     if (mounted) {
       if (success) {
-        // Registration successful — authStateProvider will auto-redirect to home
+        //registrasi berhasil — authStateProvider akan auto-redirect ke login
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Row(
@@ -93,15 +94,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             ),
             backgroundColor: AppTheme.successColor,
             behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
           ),
         );
-        // Pop back — the auth state listener in main.dart will redirect to HomeScreen
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
-        }
+        //arahkan ke halaman login setelah registrasi berhasil
+        context.go('/login');
       } else {
         final authState = ref.read(authNotifierProvider);
         final errorMessage = authState.whenOrNull(
@@ -161,7 +161,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                   children: [
                     SizedBox(height: size.height * 0.05),
 
-                    // Logo / Header
+                    //logo /Header
                     Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
@@ -201,7 +201,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
                     SizedBox(height: size.height * 0.04),
 
-                    // Register Card
+                    //register card
                     Container(
                       padding: const EdgeInsets.all(28),
                       decoration: BoxDecoration(
@@ -238,7 +238,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                             const SizedBox(height: 24),
 
-                            // Name field
+                            //nama field
                             TextFormField(
                               controller: _nameController,
                               textCapitalization: TextCapitalization.words,
@@ -271,7 +271,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                             const SizedBox(height: 16),
 
-                            // Email
+                            //email
                             TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
@@ -304,7 +304,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                             const SizedBox(height: 16),
 
-                            // Password
+                            //password
                             TextFormField(
                               controller: _passwordController,
                               obscureText: _obscurePassword,
@@ -347,7 +347,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                             const SizedBox(height: 16),
 
-                            // Confirm Password
+                            //confirm Password
                             TextFormField(
                               controller: _confirmPasswordController,
                               obscureText: _obscureConfirmPassword,
@@ -391,7 +391,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             ),
                             const SizedBox(height: 28),
 
-                            // Register button
+                            //register button
                             SizedBox(
                               width: double.infinity,
                               height: 52,
@@ -430,7 +430,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
                     const SizedBox(height: 24),
 
-                    // Back to login link
+                    //kembali ke link login
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -459,7 +459,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
                     const SizedBox(height: 20),
                     Text(
-                      '© 2026 RnD Dewi Sri Bali',
+                      'RnD Dewi Sri Bali',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white.withValues(alpha: 0.6),

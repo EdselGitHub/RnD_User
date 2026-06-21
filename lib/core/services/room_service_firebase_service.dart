@@ -12,14 +12,18 @@ class RoomServiceFirebaseService {
     return doc.id;
   }
 
-  Stream<List<RoomServiceModel>> streamRoomService() {
-    return _firestore
+  Stream<List<RoomServiceModel>> streamRoomService() async* {
+    final snapshots = _firestore
         .collection(AppConstants.roomServiceCollection)
         .orderBy('jadwal', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => RoomServiceModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<RoomServiceModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(RoomServiceModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> updateRoomServiceStatus(String id, String status) async {

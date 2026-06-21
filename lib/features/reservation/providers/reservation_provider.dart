@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/datasources/firebase/reservation_firebase_service.dart';
+import 'package:rnd_proj/core/services/reservation_firebase_service.dart';
 import 'package:rnd_proj/core/models/guest_model.dart';
 import 'package:rnd_proj/core/models/room_model.dart';
 import 'package:rnd_proj/core/models/reservation_model.dart';
@@ -15,39 +15,62 @@ final ruanganStreamProvider = StreamProvider<List<RuanganModel>>((ref) async* {
   final reservationsAsync = ref.watch(reservasiStreamProvider);
 
   await for (final roomsData in service.streamRuangan()) {
-    var rooms = roomsData.where((r) => r.status != 'dihapus').toList();
+    //mengambil data ruangan yang tidak dihapus menggunakan loop
+    final List<RuanganModel> roomsList = [];
+    for (final r in roomsData) {
+      if (r.status != 'dihapus') {
+        roomsList.add(r);
+      }
+    }
+
+    final List<RuanganModel> finalRooms = [];
 
     if (reservationsAsync is AsyncData) {
       final reservations = reservationsAsync.value!;
       final now = DateTime.now();
 
-      rooms = rooms.map((room) {
-        if (room.status == 'maintenance') return room;
-
-        bool isOccupiedNow = reservations.any((res) {
-          if (res.status != AppConstants.statusAktif) return false;
-          if (res.roomId != room.id) return false;
-          return now.compareTo(res.checkin) >= 0 && now.compareTo(res.checkout) < 0;
-        });
-
-        String finalStatus = AppConstants.statusTersedia;
-        if (isOccupiedNow || room.status == 'tidak tersedia' || room.status == AppConstants.statusTerisi) {
-          finalStatus = AppConstants.statusTerisi;
+      //mengecek status okupansi menggunakan loop
+      for (final room in roomsList) {
+        if (room.status == 'maintenance') {
+          finalRooms.add(room);
+          continue;
         }
 
-        return room.copyWith(
+        bool isOccupiedNow = false;
+        for (final res in reservations) {
+          if (res.status == AppConstants.statusAktif &&
+              res.roomId == room.id &&
+              now.compareTo(res.checkin) >= 0 &&
+              now.compareTo(res.checkout) < 0) {
+            isOccupiedNow = true;
+            break; // Jika sudah cocok, hentikan pencarian
+          }
+        }
+
+        //agar kamar di app user tersedia meskipun menginput data lama di app admin / staff
+        String finalStatus = isOccupiedNow ? AppConstants.statusTerisi : AppConstants.statusTersedia;
+
+        finalRooms.add(room.copyWith(
           status: finalStatus,
-        );
-      }).toList();
+        ));
+      }
+    } else {
+      finalRooms.addAll(roomsList);
     }
-    yield rooms;
+    yield finalRooms;
   }
 });
 
 final availableRoomsProvider = Provider<AsyncValue<List<RuanganModel>>>((ref) {
-  return ref.watch(ruanganStreamProvider).whenData(
-        (rooms) => rooms.where((r) => r.status == AppConstants.statusTersedia).toList(),
-      );
+  return ref.watch(ruanganStreamProvider).whenData((rooms) {
+    final List<RuanganModel> list = [];
+    for (final r in rooms) {
+      if (r.status == AppConstants.statusTersedia) {
+        list.add(r);
+      }
+    }
+    return list;
+  });
 });
 
 final reservasiStreamProvider = StreamProvider<List<ReservasiModel>>((ref) {
@@ -81,7 +104,7 @@ class ReservationNotifier extends AsyncNotifier<void> {
   }) async {
     state = const AsyncLoading();
     try {
-      // 1. Save tamu
+      //save tamu
       final tamuId = await _service.addTamu(TamuModel(
         id: '',
         nama: namaTamu,
@@ -89,7 +112,7 @@ class ReservationNotifier extends AsyncNotifier<void> {
         kartuIdentitas: kartuIdentitas,
       ));
 
-      // 2. Save reservasi
+      //simapan reservation
       await _service.addReservasi(ReservasiModel(
         id: '',
         tamuId: tamuId,
@@ -101,13 +124,13 @@ class ReservationNotifier extends AsyncNotifier<void> {
         createdAt: DateTime.now(),
       ));
 
-      // 3. Update room status ONLY if checkin is today or past
+      //update status ruangan kalo checkin hari ini atau sebelumnya
       final now = DateTime.now();
       if (checkin.isBefore(now) || (checkin.year == now.year && checkin.month == now.month && checkin.day == now.day)) {
         await _service.updateRoomStatus(roomId, AppConstants.statusTerisi);
       }
 
-      // 4. Insert transaksi keuangan
+      //insert transaksi keuangan
       await _service.addTransaksiKeuangan(
         kategori: AppConstants.kategoriKamar,
         deskripsi: 'Penjualan kamar $roomName',

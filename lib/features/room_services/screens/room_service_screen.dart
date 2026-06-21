@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/room_services/providers/room_service_provider.dart';
 import 'package:rnd_proj/features/reservation/providers/reservation_provider.dart';
@@ -80,18 +80,18 @@ class _RoomServiceStatusTab extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Banner
+              //banner
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                    colors: [AppColors.roomService, AppColors.roomServiceLight],
                   ),
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                      color: AppColors.roomService.withValues(alpha: 0.3),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
@@ -131,14 +131,14 @@ class _RoomServiceStatusTab extends ConsumerWidget {
 
               const SizedBox(height: 24),
 
-              // Quick request button
+              //quick request button
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton.icon(
                   onPressed: onRequestTap,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8B5CF6),
+                    backgroundColor: AppColors.roomService,
                   ),
                   icon: const Icon(Icons.add_circle_outline_rounded),
                   label: const Text('Minta Room Service Sekarang'),
@@ -147,13 +147,13 @@ class _RoomServiceStatusTab extends ConsumerWidget {
 
               const SizedBox(height: 24),
 
-              // Request history
+              //request history
               const Text(
                 'Permintaan Pembersihan Kamar',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.textPrimary,
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -163,19 +163,19 @@ class _RoomServiceStatusTab extends ConsumerWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceColor,
+                    color: AppColors.surface,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppTheme.dividerColor),
+                    border: Border.all(color: AppColors.divider),
                   ),
                   child: const Column(
                     children: [
                       Icon(Icons.cleaning_services_outlined,
-                          size: 40, color: AppTheme.textLight),
+                          size: 40, color: AppColors.textLight),
                       SizedBox(height: 8),
                       Text(
                         'Belum ada permintaan Room Service',
                         style: TextStyle(
-                            color: AppTheme.textSecondary, fontSize: 13),
+                            color: AppColors.textSecondary, fontSize: 13),
                       ),
                     ],
                   ),
@@ -189,11 +189,11 @@ class _RoomServiceStatusTab extends ConsumerWidget {
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color:
-                                const Color(0xFF8B5CF6).withValues(alpha: 0.12),
+                                AppColors.roomService.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(Icons.cleaning_services,
-                              color: Color(0xFF8B5CF6)),
+                              color: AppColors.roomService),
                         ),
                         title: Builder(
                           builder: (_) {
@@ -209,12 +209,12 @@ class _RoomServiceStatusTab extends ConsumerWidget {
                             const SizedBox(height: 6),
                             Text(
                               'Jadwal: ${Helpers.formatDateTime(s.jadwal)}',
-                              style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                              style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               'Dibuat: ${Helpers.formatDateTime(s.createdAt)}',
-                              style: const TextStyle(fontSize: 11, color: AppTheme.textLight),
+                              style: const TextStyle(fontSize: 11, color: AppColors.textLight),
                             ),
                           ],
                         ),
@@ -297,7 +297,7 @@ class _RoomServiceRequestTabState
           const InfoBanner(
             message: 'Pilih kamar Anda dan jadwal pembersihan yang diinginkan',
             icon: Icons.info_outline_rounded,
-            color: Color(0xFF8B5CF6),
+            color: AppColors.roomService,
           ),
           const SizedBox(height: 20),
 
@@ -336,19 +336,19 @@ class _RoomServiceRequestTabState
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.dividerColor),
+                border: Border.all(color: AppColors.divider),
               ),
               child: Row(
                 children: [
                   const Icon(Icons.schedule,
-                      color: Color(0xFF8B5CF6)),
+                      color: AppColors.roomService),
                   const SizedBox(width: 12),
                   Text(Helpers.formatDateTime(_jadwal),
                       style: const TextStyle(
                           fontSize: 15, fontWeight: FontWeight.w600)),
                   const Spacer(),
                   const Icon(Icons.edit_calendar_rounded,
-                      color: AppTheme.textLight, size: 20),
+                      color: AppColors.textLight, size: 20),
                 ],
               ),
             ),
@@ -360,7 +360,7 @@ class _RoomServiceRequestTabState
             child: ElevatedButton.icon(
               onPressed: formState is AsyncLoading ? null : _handleSubmit,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8B5CF6),
+                backgroundColor: AppColors.roomService,
               ),
               icon: const Icon(Icons.send_rounded),
               label: const Text('Kirim Permintaan'),

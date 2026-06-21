@@ -8,7 +8,7 @@ import 'package:rnd_proj/features/auth/screens/login_screen.dart';
 import 'package:rnd_proj/core/routes/app_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-/// Tracks whether Firebase was successfully initialized
+///untuk mengecek sudah terhubung dengan firebase atau belum
 bool firebaseInitialized = false;
 
 void main() async {
@@ -22,7 +22,7 @@ void main() async {
     firebaseInitialized = true;
   } catch (e) {
     debugPrint('Firebase init failed: $e');
-    debugPrint('Running in offline/demo mode.');
+    debugPrint('Running in offline mode.');
   }
 
   runApp(const ProviderScope(child: MyApp()));

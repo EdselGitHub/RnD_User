@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/datasources/firebase/laundry_firebase_service.dart';
+import 'package:rnd_proj/core/services/laundry_firebase_service.dart';
 import 'package:rnd_proj/core/models/laundry_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
 
@@ -41,7 +41,11 @@ class LaundryNotifier extends AsyncNotifier<void> {
         status: AppConstants.statusMenunggu,
       ));
 
-      await _service.addTransaksiKeuangan(jumlah: harga, userId: userId);
+      await _service.addTransaksiKeuangan(
+        jumlah: harga,
+        userId: userId,
+        deskripsi: '$tamuId ($jenis - ${beratKG}KG)',
+      );
 
       state = const AsyncData(null);
       return true;

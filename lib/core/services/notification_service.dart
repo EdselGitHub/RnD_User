@@ -11,14 +11,14 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
-    // Request permission
+    //request permission
     await _messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    // Initialize local notifications
+    //initialize local notifications
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings();
@@ -28,12 +28,12 @@ class NotificationService {
     );
     await _localNotifications.initialize(initSettings);
 
-    // Handle foreground messages
+    //handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showLocalNotification(message);
     });
 
-    // Get FCM token
+    //get FCM token
     final token = await _messaging.getToken();
     if (token != null) {
       // You can save the token to Firestore if needed

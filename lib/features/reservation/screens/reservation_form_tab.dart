@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/core/entities/room_entity.dart';
 import 'package:rnd_proj/features/reservation/providers/reservation_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:rnd_proj/core/services/storage_service.dart';
@@ -76,7 +75,7 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill user name if available
+    //mengisi nama user otomatis
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authState = ref.read(authNotifierProvider);
       final userName = authState.valueOrNull?.name;
@@ -125,8 +124,10 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
     final now = DateUtils.dateOnly(DateTime.now());
     final d = await showDatePicker(
       context: context,
-      initialDate: isCheckin ? _checkin : _checkout,
-      firstDate: now,
+      initialDate: isCheckin 
+          ? _checkin 
+          : (_checkout.isBefore(_checkin) ? _checkin.add(const Duration(days: 1)) : _checkout),
+      firstDate: isCheckin ? now : _checkin.add(const Duration(days: 1)),
       lastDate: now.add(const Duration(days: 365)),
     );
     if (d != null) {
@@ -157,15 +158,19 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
       Helpers.showSnackBar(context, 'Mohon lampirkan foto KTP/Kartu Identitas', isError: true);
       return;
     }
+    if (_checkout.isBefore(_checkin) || _checkout.isAtSameMomentAs(_checkin)) {
+      Helpers.showSnackBar(context, 'Tanggal check-out harus setelah tanggal check-in', isError: true);
+      return;
+    }
 
-    // Validate overlaps
+    //validasi apa ada overlap kamar
     final reservationsAsync = ref.read(reservasiStreamProvider);
     if (reservationsAsync.hasValue) {
       final activeRes = reservationsAsync.value!
           .where((r) => r.status == AppConstants.statusAktif && r.roomId == _selectedRoomId)
           .toList();
       for (final res in activeRes) {
-        // If the new checkin is strictly before existing checkout, AND new checkout is strictly after existing checkin
+        // kalau checkin baru sebelum checkout yang sudah ada dan checkout baru sesudah checkin yang sudah ada 
         if (_checkin.isBefore(res.checkout) && _checkout.isAfter(res.checkin)) {
           Helpers.showSnackBar(context, 'Kamar sudah dipesan pada rentang tanggal tersebut', isError: true);
           return;
@@ -234,11 +239,11 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Info banner
+            //info banner
             const InfoBanner(
               message: 'Isi data diri Anda untuk melakukan reservasi kamar',
               icon: Icons.info_outline_rounded,
-              color: AppTheme.infoColor,
+              color: AppColors.info,
             ),
             const SizedBox(height: 20),
 
@@ -272,7 +277,7 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(left: 4),
-                  child: Text('Foto KTP/Kartu Identitas', style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                  child: Text('Foto KTP/Kartu Identitas', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                 ),
                 const SizedBox(height: 8),
                 InkWell(
@@ -284,7 +289,7 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppTheme.dividerColor),
+                      border: Border.all(color: AppColors.divider),
                     ),
                     child: _idCardImage != null
                         ? ClipRRect(
@@ -294,9 +299,9 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
                         : const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.camera_alt_outlined, color: AppTheme.primaryColor, size: 32),
+                              Icon(Icons.camera_alt_outlined, color: AppColors.primary, size: 32),
                               SizedBox(height: 8),
-                              Text('Ketuk untuk upload foto KTP', style: TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                              Text('Ketuk untuk upload foto KTP', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                             ],
                           ),
                   ),
@@ -316,12 +321,12 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
                   return Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppTheme.warningColor.withValues(alpha: 0.1),
+                      color: AppColors.warning.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Row(children: [
                       Icon(Icons.warning_amber,
-                          color: AppTheme.warningColor),
+                          color: AppColors.warning),
                       SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -435,7 +440,7 @@ class _ReservationFormTabState extends ConsumerState<ReservationFormTab> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                    colors: [Color(0xFF1A6B52), Color(0xFF2D9B75)]),
+                    colors: [AppColors.primary, AppColors.primaryLight]),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
@@ -509,18 +514,18 @@ class _DateCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTheme.dividerColor),
+          border: Border.all(color: AppColors.divider),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label,
                 style: const TextStyle(
-                    fontSize: 12, color: AppTheme.textSecondary)),
+                    fontSize: 12, color: AppColors.textSecondary)),
             const SizedBox(height: 6),
             Row(children: [
               const Icon(Icons.calendar_today,
-                  size: 16, color: AppTheme.primaryColor),
+                  size: 16, color: AppColors.primary),
               const SizedBox(width: 6),
               Text(Helpers.formatDate(date),
                   style: const TextStyle(

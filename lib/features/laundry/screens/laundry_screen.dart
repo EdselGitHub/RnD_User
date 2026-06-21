@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/laundry/providers/laundry_provider.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
@@ -72,18 +72,18 @@ class _LaundryInfoTab extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Banner
+          //banner
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF3B82F6), Color(0xFF60A5FA)],
+                colors: [AppColors.info, AppColors.infoLight],
               ),
               borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF3B82F6).withValues(alpha: 0.3),
+                  color: AppColors.info.withValues(alpha: 0.3),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -124,13 +124,13 @@ class _LaundryInfoTab extends ConsumerWidget {
 
           const SizedBox(height: 24),
 
-          // Price info
+          //info harga
           const Text(
             'Informasi Harga',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppTheme.textPrimary,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -138,32 +138,32 @@ class _LaundryInfoTab extends ConsumerWidget {
           _InfoItem(
             icon: Icons.scale_rounded,
             title: 'Harga per KG',
-            value: Helpers.formatCurrency(15000),
-            color: AppTheme.infoColor,
+            value: '${Helpers.formatCurrency(10000)} (Regular) / ${Helpers.formatCurrency(13000)} (Express)',
+            color: AppColors.info,
           ),
           _InfoItem(
             icon: Icons.timer_rounded,
             title: 'Estimasi Waktu',
             value: '1 - 2 Hari Kerja',
-            color: AppTheme.secondaryColor,
+            color: AppColors.secondary,
           ),
           const _InfoItem(
             icon: Icons.dry_cleaning_rounded,
             title: 'Layanan Tersedia',
             value: 'Regular & Express',
-            color: AppTheme.primaryColor,
+            color: AppColors.primary,
           ),
 
           const SizedBox(height: 24),
 
-          // CTA Button
+          //button
           SizedBox(
             width: double.infinity,
             height: 52,
             child: ElevatedButton.icon(
               onPressed: onOrderTap,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.infoColor,
+                backgroundColor: AppColors.info,
               ),
               icon: const Icon(Icons.add_circle_outline_rounded),
               label: const Text('Pesan Laundry Sekarang'),
@@ -213,7 +213,7 @@ class _InfoItem extends StatelessWidget {
                 children: [
                   Text(title,
                       style: const TextStyle(
-                          fontSize: 12, color: AppTheme.textSecondary)),
+                          fontSize: 12, color: AppColors.textSecondary)),
                   const SizedBox(height: 2),
                   Text(value,
                       style: const TextStyle(
@@ -241,7 +241,7 @@ class _LaundryFormTabState extends ConsumerState<_LaundryFormTab> {
   final _formKey = GlobalKey<FormState>();
   final _namaCtrl = TextEditingController();
   final _nomorKamarCtrl = TextEditingController();
-  final double _hargaPerKG = 15000;
+  double get _hargaPerKG => _selectedJenis == 'Express' ? 13000 : 10000;
   String _selectedJenis = 'Regular';
 
   @override
@@ -300,11 +300,11 @@ class _LaundryFormTabState extends ConsumerState<_LaundryFormTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Info banner
+            //info banner
             const InfoBanner(
               message: 'Pilih jenis layanan, isi nama dan nomor kamar Anda',
               icon: Icons.info_outline_rounded,
-              color: AppTheme.infoColor,
+              color: AppColors.info,
             ),
             const SizedBox(height: 20),
 
@@ -312,7 +312,7 @@ class _LaundryFormTabState extends ConsumerState<_LaundryFormTab> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
             const SizedBox(height: 16),
 
-            // Jenis layanan dropdown
+            //jenis layanan dropdown
             DropdownButtonFormField<String>(
               value: _selectedJenis,
               decoration: const InputDecoration(
@@ -328,6 +328,49 @@ class _LaundryFormTabState extends ConsumerState<_LaundryFormTab> {
               onChanged: (v) {
                 if (v != null) setState(() => _selectedJenis = v);
               },
+            ),
+            const SizedBox(height: 10),
+
+            // Indikator Harga Layanan
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.info.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.info.withValues(alpha: 0.15),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline_rounded, color: AppColors.info, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+                        children: [
+                          const TextSpan(text: 'Tarif Layanan: '),
+                          TextSpan(
+                            text: Helpers.formatCurrency(_hargaPerKG),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.info,
+                            ),
+                          ),
+                          const TextSpan(text: ' / kg ('),
+                          TextSpan(
+                            text: _selectedJenis,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(text: ')'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 14),
 
@@ -365,7 +408,7 @@ class _LaundryFormTabState extends ConsumerState<_LaundryFormTab> {
               child: ElevatedButton.icon(
                 onPressed: formState is AsyncLoading ? null : _handleSubmit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.infoColor,
+                  backgroundColor: AppColors.info,
                 ),
                 icon: const Icon(Icons.send_rounded),
                 label: const Text('Kirim Pesanan Laundry'),

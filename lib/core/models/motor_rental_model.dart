@@ -20,11 +20,21 @@ class MotorSewaModel extends MotorSewaEntity {
     final hargaPerhari = (data['harga_perhari'] ?? 150000).toDouble();
     final total = (data['total'] ?? 0).toDouble();
 
-    // Backward-compatible: jika tanggal_kembali belum ada di dokumen lama,
-    // hitung dari tanggal + durasi berdasarkan total/hargaPerhari
+    final motorId = data['motor_id'] is DocumentReference
+        ? (data['motor_id'] as DocumentReference).id
+        : data['motor_id']?.toString() ?? '';
+
+    final tamuId = data['tamu_id'] is DocumentReference
+        ? (data['tamu_id'] as DocumentReference).id
+        : data['tamu_id']?.toString() ?? '';
+
     DateTime tanggalKembali;
-    if (data['tanggal_kembali'] != null) {
+    if (data['tanggal_kembali'] is Timestamp) {
       tanggalKembali = (data['tanggal_kembali'] as Timestamp).toDate();
+    } else if (data['tanggal_selesai'] is Timestamp) {
+      tanggalKembali = (data['tanggal_selesai'] as Timestamp).toDate();
+    } else if (data['tanggalSelesai'] is Timestamp) {
+      tanggalKembali = (data['tanggalSelesai'] as Timestamp).toDate();
     } else {
       final days = (hargaPerhari > 0) ? (total / hargaPerhari).round() : 1;
       tanggalKembali = tanggal.add(Duration(days: days));
@@ -32,14 +42,14 @@ class MotorSewaModel extends MotorSewaEntity {
 
     return MotorSewaModel(
       id: doc.id,
-      motorId: data['motor_id'] ?? '',
-      tamuId: data['tamu_id'] ?? '',
+      motorId: motorId,
+      tamuId: tamuId,
       tanggal: tanggal,
       tanggalKembali: tanggalKembali,
       pembuatan: (data['pembuatan'] as Timestamp).toDate(),
       hargaPerhari: hargaPerhari,
       total: total,
-      status: data['status'] ?? 'aktif',
+      status: (data['status'] as String? ?? 'aktif').trim().toLowerCase(),
     );
   }
 

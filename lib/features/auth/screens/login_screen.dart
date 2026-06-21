@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -71,7 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               Expanded(child: Text(errorMsg)),
             ],
           ),
-          backgroundColor: AppTheme.errorColor,
+          backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -96,9 +96,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF0E4D3A),
-              Color(0xFF1A6B52),
-              Color(0xFF2D9B75),
+              AppColors.primaryDark,
+              AppColors.primary,
+              AppColors.primaryLight,
             ],
           ),
         ),
@@ -113,7 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   children: [
                     SizedBox(height: size.height * 0.08),
 
-                    // Logo / Header
+                    //logo / header
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -153,7 +153,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
                     SizedBox(height: size.height * 0.06),
 
-                    // Login Card
+                    //login card
                     Container(
                       padding: const EdgeInsets.all(28),
                       decoration: BoxDecoration(
@@ -177,7 +177,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
-                                color: AppTheme.textPrimary,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -185,12 +185,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               'Masuk untuk menikmati layanan kami',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: AppTheme.textSecondary,
+                                color: AppColors.textSecondary,
                               ),
                             ),
                             const SizedBox(height: 28),
 
-                            // Email
+                            //email
                             TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
@@ -198,9 +198,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 labelText: 'Email',
                                 hintText: 'email@example.com',
                                 prefixIcon: const Icon(Icons.email_outlined,
-                                    color: AppTheme.primaryColor),
+                                    color: AppColors.primary),
                                 filled: true,
-                                fillColor: AppTheme.surfaceColor,
+                                fillColor: AppColors.background,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
                                   borderSide: BorderSide.none,
@@ -208,7 +208,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
                                   borderSide: const BorderSide(
-                                      color: AppTheme.primaryColor, width: 2),
+                                      color: AppColors.primary, width: 2),
                                 ),
                               ),
                               validator: (v) {
@@ -223,7 +223,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                             const SizedBox(height: 18),
 
-                            // Password
+                            //password
                             TextFormField(
                               controller: _passwordController,
                               obscureText: _obscurePassword,
@@ -231,19 +231,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 labelText: 'Password',
                                 hintText: '••••••••',
                                 prefixIcon: const Icon(Icons.lock_outline,
-                                    color: AppTheme.primaryColor),
+                                    color: AppColors.primary),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword
                                         ? Icons.visibility_off_outlined
                                         : Icons.visibility_outlined,
-                                    color: AppTheme.textLight,
+                                    color: AppColors.textLight,
                                   ),
                                   onPressed: () => setState(
                                       () => _obscurePassword = !_obscurePassword),
                                 ),
                                 filled: true,
-                                fillColor: AppTheme.surfaceColor,
+                                fillColor: AppColors.background,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
                                   borderSide: BorderSide.none,
@@ -251,7 +251,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
                                   borderSide: const BorderSide(
-                                      color: AppTheme.primaryColor, width: 2),
+                                      color: AppColors.primary, width: 2),
                                 ),
                               ),
                               validator: (v) {
@@ -266,14 +266,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                             const SizedBox(height: 28),
 
-                            // Login button
+                            //login button
                             SizedBox(
                               width: double.infinity,
                               height: 52,
                               child: ElevatedButton(
                                 onPressed: isLoading ? null : _handleLogin,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.primaryColor,
+                                  backgroundColor: AppColors.primary,
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
@@ -305,7 +305,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
                     const SizedBox(height: 24),
 
-                    // Register link
+                    //register link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
 import 'package:rnd_proj/core/models/room_type_model.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -16,11 +17,11 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Premium App Bar
+          //premium app barr
           SliverAppBar(
             expandedHeight: 220,
             pinned: true,
-            backgroundColor: AppTheme.primaryColor,
+            backgroundColor: AppColors.primary,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: const BoxDecoration(
@@ -28,9 +29,9 @@ class HomeScreen extends ConsumerWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFF0E4D3A),
-                      Color(0xFF1A6B52),
-                      Color(0xFF2D9B75),
+                      AppColors.primaryDark,
+                      AppColors.primary,
+                      AppColors.primaryLight,
                     ],
                   ),
                 ),
@@ -124,7 +125,7 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
 
-          // Quick Info Banner
+          //quick Info Banner
           SliverToBoxAdapter(
             child: Container(
               margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -132,13 +133,13 @@ class HomeScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppTheme.primaryColor.withValues(alpha: 0.08),
-                    AppTheme.primaryLight.withValues(alpha: 0.05),
+                    AppColors.primary.withValues(alpha: 0.08),
+                    AppColors.primaryLight.withValues(alpha: 0.05),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppTheme.primaryColor.withValues(alpha: 0.15),
+                  color: AppColors.primary.withValues(alpha: 0.15),
                 ),
               ),
               child: Row(
@@ -146,12 +147,12 @@ class HomeScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.12),
+                      color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.info_outline_rounded,
-                      color: AppTheme.primaryColor,
+                      color: AppColors.primary,
                       size: 22,
                     ),
                   ),
@@ -165,15 +166,15 @@ class HomeScreen extends ConsumerWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
-                            color: AppTheme.textPrimary,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         SizedBox(height: 2),
                         Text(
-                          'Hubungi resepsionis kami kapan saja',
+                          'Hubungi resepsionis kami kapan saja di nomor berikut 081995567139',
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppTheme.textSecondary,
+                            color: AppColors.textSecondary,
                           ),
                         ),
                       ],
@@ -183,6 +184,14 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           ),
+
+          //pemanggil quick menu grid realtime testing
+          // const SliverToBoxAdapter(
+          //   child: Padding(
+          //     padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
+          //     child: _QuickMenuGrid(),
+          //   ),
+          // ),
 
           // Room Types Carousel
           SliverToBoxAdapter(
@@ -196,7 +205,7 @@ class HomeScreen extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.textPrimary,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ),
@@ -263,7 +272,7 @@ class HomeScreen extends ConsumerWidget {
                                         style: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w700,
-                                          color: AppTheme.textPrimary,
+                                          color: AppColors.textPrimary,
                                         ),
                                       ),
                                       const SizedBox(height: 4),
@@ -271,7 +280,7 @@ class HomeScreen extends ConsumerWidget {
                                         room.subtitle,
                                         style: const TextStyle(
                                           fontSize: 12,
-                                          color: AppTheme.textSecondary,
+                                          color: AppColors.textSecondary,
                                         ),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -291,7 +300,7 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
 
-          // Menu Grid
+          //menu grid
           SliverPadding(
             padding: const EdgeInsets.all(20),
             sliver: SliverToBoxAdapter(
@@ -303,7 +312,7 @@ class HomeScreen extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.textPrimary,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -311,7 +320,7 @@ class HomeScreen extends ConsumerWidget {
                     'Pilih layanan yang Anda butuhkan',
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppTheme.textSecondary,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -327,42 +336,42 @@ class HomeScreen extends ConsumerWidget {
                         icon: Icons.hotel_rounded,
                         title: 'Reservasi\nKamar',
                         subtitle: 'Pesan kamar',
-                        gradient: const [Color(0xFF1A6B52), Color(0xFF2D9B75)],
+                        gradient: const [AppColors.primary, AppColors.primaryLight],
                         onTap: () => context.push('/reservation'),
                       ),
                       _MenuCard(
                         icon: Icons.two_wheeler_rounded,
                         title: 'Sewa\nMotor',
                         subtitle: 'Jelajahi Bali',
-                        gradient: const [Color(0xFFE8A838), Color(0xFFF5C563)],
+                        gradient: const [AppColors.secondary, AppColors.secondaryLight],
                         onTap: () => context.push('/motor'),
                       ),
                       _MenuCard(
                         icon: Icons.local_laundry_service_rounded,
                         title: 'Laundry',
                         subtitle: 'Layanan cuci',
-                        gradient: const [Color(0xFF3B82F6), Color(0xFF60A5FA)],
+                        gradient: const [AppColors.info, AppColors.infoLight],
                         onTap: () => context.push('/laundry'),
                       ),
                       _MenuCard(
                         icon: Icons.cleaning_services_rounded,
                         title: 'Room\nService',
                         subtitle: 'Bersihkan kamar',
-                        gradient: const [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+                        gradient: const [AppColors.roomService, AppColors.roomServiceLight],
                         onTap: () => context.push('/room-service'),
                       ),
                       _MenuCard(
                         icon: Icons.local_cafe_rounded,
                         title: 'Pesan\nMinuman',
                         subtitle: 'Menu minuman',
-                        gradient: const [Color(0xFFE06356), Color(0xFFEF8A7E)],
+                        gradient: const [AppColors.accent, AppColors.accentLight],
                         onTap: () => context.push('/drinks'),
                       ),
                       _MenuCard(
                         icon: Icons.receipt_long_rounded,
                         title: 'Riwayat\nPesanan',
                         subtitle: 'Lihat transaksi',
-                        gradient: const [Color(0xFF10B981), Color(0xFF34D399)],
+                        gradient: const [AppColors.success, AppColors.successLight],
                         onTap: () => context.push('/history'),
                       ),
                       // _MenuCard(
@@ -387,6 +396,78 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
+      // fetch testing
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     final stopwatch = Stopwatch()..start();
+      //     try {
+      //       await FirebaseFirestore.instance.collection('performance_test').get();
+      //       stopwatch.stop();
+      //       final msg = '✅ Waktu Fetch: ${stopwatch.elapsedMilliseconds} ms';
+      //       debugPrint(msg);
+      //       if (context.mounted) {
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           SnackBar(
+      //             content: Text(msg),
+      //             backgroundColor: AppTheme.successColor,
+      //           ),
+      //         );
+      //       }
+      //     } catch (e) {
+      //       final msg = '❌ Error saat fetch: $e';
+      //       debugPrint(msg);
+      //       if (context.mounted) {
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           SnackBar(
+      //             content: Text(msg),
+      //             backgroundColor: AppTheme.errorColor,
+      //           ),
+      //         );
+      //       }
+      //     }
+      //   },
+      //   backgroundColor: AppTheme.primaryColor,
+      //   tooltip: 'Test Firebase Fetch Performance',
+      //   child: const Icon(Icons.speed, color: Colors.white),
+      // ),
+
+      // insert testing
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     final stopwatch = Stopwatch()..start();
+      //     try {
+      //       await FirebaseFirestore.instance.collection('performance_test').add({
+      //         'test_data': 'Hello Firebase',
+      //         'created_at': FieldValue.serverTimestamp(),
+      //       });
+      //       stopwatch.stop();
+      //       final msg = '✅ Waktu Insert: ${stopwatch.elapsedMilliseconds} ms';
+      //       debugPrint(msg);
+      //       if (context.mounted) {
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           SnackBar(
+      //             content: Text(msg),
+      //             backgroundColor: AppTheme.successColor,
+      //           ),
+      //         );
+      //       }
+      //     } catch (e) {
+      //       final msg = '❌ Error saat insert: $e';
+      //       debugPrint(msg);
+      //       if (context.mounted) {
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           SnackBar(
+      //             content: Text(msg),
+      //             backgroundColor: AppTheme.errorColor,
+      //           ),
+      //         );
+      //       }
+      //     }
+      //   },
+      //   backgroundColor: AppTheme.primaryColor,
+      //   tooltip: 'Test Firebase Insert Performance',
+      //   child: const Icon(Icons.speed, color: Colors.white),
+      // ),
     );
   }
 }
@@ -464,3 +545,48 @@ class _MenuCard extends StatelessWidget {
   }
 }
 
+
+
+//Untuk relatime testing
+// class _QuickMenuGrid extends ConsumerWidget {
+//   final bool isUser;
+//   const _QuickMenuGrid({this.isUser = false});
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final items = [
+//       ('Realtime\nTest', Icons.speed_rounded, const Color(0xFFF43F5E), () {
+//         Navigator.push(context, MaterialPageRoute(builder: (context) => const RealtimeUserTestScreen()));
+//       }),
+//     ];
+//     return GridView.count(
+//       crossAxisCount: 4,
+//       shrinkWrap: true,
+//       physics: const NeverScrollableScrollPhysics(),
+//       children: items.map((item) {
+//         return InkWell(
+//           onTap: item.$4,
+//           borderRadius: BorderRadius.circular(12.0),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Container(
+//                 width: 52,
+//                 height: 52,
+//                 decoration: BoxDecoration(
+//                   color: item.$3.withValues(alpha: 0.12),
+//                   borderRadius: BorderRadius.circular(12.0),
+//                 ),
+//                 child: Icon(item.$2, color: item.$3, size: 26),
+//               ),
+//               const SizedBox(height: 6),
+//               Text(item.$1,
+//                   textAlign: TextAlign.center,
+//                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+//             ],
+//           ),
+//         );
+//       }).toList(),
+//     );
+//   }
+// }

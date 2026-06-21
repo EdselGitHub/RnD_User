@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/datasources/firebase/finance_firebase_service.dart';
+import 'package:rnd_proj/core/services/finance_firebase_service.dart';
 import 'package:rnd_proj/core/models/finance_transacton_model.dart';
 
 final financeServiceProvider = Provider<FinanceFirebaseService>((ref) {

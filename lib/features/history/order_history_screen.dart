@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/finance/providers/finance_provider.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
@@ -33,19 +33,19 @@ class OrderHistoryScreen extends ConsumerWidget {
 
           return Column(
             children: [
-              // Total spending card
+              //total pengeluaran card
               Container(
                 width: double.infinity,
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF10B981), Color(0xFF34D399)],
+                    colors: [AppColors.success, AppColors.successLight],
                   ),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF10B981).withValues(alpha: 0.3),
+                      color: AppColors.success.withValues(alpha: 0.3),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
@@ -79,20 +79,20 @@ class OrderHistoryScreen extends ConsumerWidget {
                 ),
               ),
 
-              // Section title
+              // judul section
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     Icon(Icons.history_rounded,
-                        color: AppTheme.textSecondary, size: 20),
+                        color: AppColors.textSecondary, size: 20),
                     SizedBox(width: 8),
                     Text(
                       'Semua Transaksi',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
@@ -100,7 +100,7 @@ class OrderHistoryScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
 
-              // Transaction list
+              //lsit transaksi
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -113,27 +113,27 @@ class OrderHistoryScreen extends ConsumerWidget {
                     switch (t.kategori) {
                       case 'kamar':
                         icon = Icons.hotel_rounded;
-                        color = AppTheme.primaryColor;
+                        color = AppColors.primary;
                         label = 'Reservasi Kamar';
                         break;
                       case 'motor':
                         icon = Icons.two_wheeler_rounded;
-                        color = AppTheme.secondaryColor;
+                        color = AppColors.secondary;
                         label = 'Sewa Motor';
                         break;
                       case 'laundry':
                         icon = Icons.local_laundry_service_rounded;
-                        color = AppTheme.infoColor;
+                        color = AppColors.info;
                         label = 'Laundry';
                         break;
                       case 'minuman':
                         icon = Icons.local_cafe_rounded;
-                        color = AppTheme.accentColor;
+                        color = AppColors.accent;
                         label = 'Minuman';
                         break;
                       default:
                         icon = Icons.receipt_rounded;
-                        color = AppTheme.textSecondary;
+                        color = AppColors.textSecondary;
                         label = t.kategori.toUpperCase();
                     }
 
@@ -162,7 +162,7 @@ class OrderHistoryScreen extends ConsumerWidget {
                             Row(
                               children: [
                                 const Icon(Icons.schedule,
-                                    size: 12, color: AppTheme.textLight),
+                                    size: 12, color: AppColors.textLight),
                                 const SizedBox(width: 4),
                                 Text(
                                   Helpers.formatDateTime(t.tanggal),
@@ -175,7 +175,7 @@ class OrderHistoryScreen extends ConsumerWidget {
                         trailing: Text(
                           Helpers.formatCurrency(t.jumlah),
                           style: const TextStyle(
-                            color: AppTheme.primaryColor,
+                            color: AppColors.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: 14,
                           ),

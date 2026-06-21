@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../constants/app_constants.dart';
 
 class AppTheme {
   AppTheme._();
 
-  // Color Palette - Tropical Bali Inspired
-  static const Color primaryColor = Color(0xFF1A6B52);
-  static const Color primaryLight = Color(0xFF2D9B75);
-  static const Color primaryDark = Color(0xFF0E4D3A);
-  static const Color secondaryColor = Color(0xFFE8A838);
-  static const Color secondaryLight = Color(0xFFF5C563);
-  static const Color accentColor = Color(0xFFE06356);
-  static const Color surfaceColor = Color(0xFFF8F5F0);
-  static const Color cardColor = Colors.white;
-  static const Color textPrimary = Color(0xFF1A1A2E);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textLight = Color(0xFF9CA3AF);
-  static const Color dividerColor = Color(0xFFE5E7EB);
-  static const Color successColor = Color(0xFF10B981);
-  static const Color warningColor = Color(0xFFF59E0B);
-  static const Color errorColor = Color(0xFFEF4444);
-  static const Color infoColor = Color(0xFF3B82F6);
+  static const Color primaryColor = AppColors.primary;
+  static const Color primaryLight = AppColors.primaryLight;
+  static const Color primaryDark = AppColors.primaryDark;
+  static const Color secondaryColor = AppColors.secondary;
+  static const Color secondaryLight = AppColors.secondaryLight;
+  static const Color accentColor = AppColors.accent;
+  static const Color surfaceColor = AppColors.background;
+  static const Color cardColor = AppColors.surface;
+  static const Color textPrimary = AppColors.textPrimary;
+  static const Color textSecondary = AppColors.textSecondary;
+  static const Color textLight = AppColors.textLight;
+  static const Color dividerColor = AppColors.divider;
+  static const Color successColor = AppColors.success;
+  static const Color warningColor = AppColors.warning;
+  static const Color errorColor = AppColors.error;
+  static const Color infoColor = AppColors.info;
 
   static ThemeData get lightTheme {
     final textTheme = GoogleFonts.plusJakartaSansTextTheme();
@@ -28,11 +28,11 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      colorSchemeSeed: primaryColor,
-      scaffoldBackgroundColor: surfaceColor,
+      colorSchemeSeed: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.background,
       textTheme: textTheme,
       appBarTheme: AppBarTheme(
-        backgroundColor: primaryColor,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -43,7 +43,7 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: cardColor,
+        color: AppColors.surface,
         elevation: 2,
         shadowColor: Colors.black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(
@@ -52,7 +52,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
+          backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
@@ -67,8 +67,8 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: primaryColor,
-          side: const BorderSide(color: primaryColor, width: 1.5),
+          foregroundColor: AppColors.primary,
+          side: const BorderSide(color: AppColors.primary, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -85,45 +85,45 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: dividerColor),
+          borderSide: const BorderSide(color: AppColors.divider),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: dividerColor),
+          borderSide: const BorderSide(color: AppColors.divider),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: primaryColor, width: 2),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: errorColor),
+          borderSide: const BorderSide(color: AppColors.error),
         ),
         labelStyle: GoogleFonts.plusJakartaSans(
-          color: textSecondary,
+          color: AppColors.textSecondary,
           fontSize: 14,
         ),
         hintStyle: GoogleFonts.plusJakartaSans(
-          color: textLight,
+          color: AppColors.textLight,
           fontSize: 14,
         ),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: primaryColor,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 4,
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
-        selectedItemColor: primaryColor,
-        unselectedItemColor: textLight,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textLight,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: primaryColor.withValues(alpha: 0.1),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
         labelStyle: GoogleFonts.plusJakartaSans(
-          color: primaryColor,
+          color: AppColors.primary,
           fontWeight: FontWeight.w500,
         ),
         shape: RoundedRectangleBorder(
@@ -131,11 +131,11 @@ class AppTheme {
         ),
       ),
       dividerTheme: const DividerThemeData(
-        color: dividerColor,
+        color: AppColors.divider,
         thickness: 1,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: textPrimary,
+        backgroundColor: AppColors.textPrimary,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),

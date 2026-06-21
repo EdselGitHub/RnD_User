@@ -15,33 +15,46 @@ class ReservationFirebaseService {
     return doc.id;
   }
 
-  Stream<List<TamuModel>> streamTamu() {
-    return _firestore
+  Stream<List<TamuModel>> streamTamu() async* {
+    final snapshots = _firestore
         .collection(AppConstants.tamuCollection)
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => TamuModel.fromFirestore(doc)).toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<TamuModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(TamuModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   // =================== RUANGAN ===================
 
-  Stream<List<RuanganModel>> streamRuangan() {
-    return _firestore
+  Stream<List<RuanganModel>> streamRuangan() async* {
+    final snapshots = _firestore
         .collection(AppConstants.ruanganCollection)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => RuanganModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<RuanganModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(RuanganModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
-  Stream<List<RuanganModel>> streamAvailableRooms() {
-    return _firestore
+  Stream<List<RuanganModel>> streamAvailableRooms() async* {
+    final snapshots = _firestore
         .collection(AppConstants.ruanganCollection)
         .where('status', isEqualTo: AppConstants.statusTersedia)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => RuanganModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<RuanganModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(RuanganModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> updateRoomStatus(String roomId, String status) async {
@@ -60,14 +73,18 @@ class ReservationFirebaseService {
     return doc.id;
   }
 
-  Stream<List<ReservasiModel>> streamReservasi() {
-    return _firestore
+  Stream<List<ReservasiModel>> streamReservasi() async* {
+    final snapshots = _firestore
         .collection(AppConstants.reservasiCollection)
         .orderBy('created_at', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ReservasiModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<ReservasiModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(ReservasiModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> updateReservasiStatus(String id, String status) async {

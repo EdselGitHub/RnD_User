@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/motor/providers/motor_provider.dart';
 import 'package:rnd_proj/features/auth/providers/auth_provider.dart';
@@ -152,11 +151,11 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Info banner
+          //info banner
           const InfoBanner(
             message: 'Pilih motor yang tersedia dan isi data diri untuk menyewa',
             icon: Icons.info_outline_rounded,
-            color: AppTheme.infoColor,
+            color: AppColors.info,
           ),
           const SizedBox(height: 20),
 
@@ -183,7 +182,7 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
               padding: const EdgeInsets.only(top: 8),
               child: Text('${_endDate!.difference(_startDate!).inDays} hari',
                   style: const TextStyle(
-                      color: AppTheme.primaryColor,
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w600)),
             ),
 
@@ -211,11 +210,11 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppTheme.warningColor.withValues(alpha: 0.1),
+                    color: AppColors.warning.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Row(children: [
-                    Icon(Icons.warning_amber, color: AppTheme.warningColor),
+                    Icon(Icons.warning_amber, color: AppColors.warning),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -258,7 +257,7 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                    colors: [Color(0xFFE8A838), Color(0xFFF5C563)]),
+                    colors: [AppColors.secondary, AppColors.secondaryLight]),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
@@ -271,12 +270,12 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
                           style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12)),
-                      SizedBox(height: 2),
-                      Text('Perhitungan Otomatis',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600)),
+                      // SizedBox(height: 2),
+                      // Text('Perhitungan Otomatis',
+                      //     style: TextStyle(
+                      //         color: Colors.white,
+                      //         fontSize: 16,
+                      //         fontWeight: FontWeight.w600)),
                     ],
                   ),
                   Text(Helpers.formatCurrency(_motorPrice * _endDate!.difference(_startDate!).inDays),
@@ -294,7 +293,7 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
             child: ElevatedButton.icon(
               onPressed: formState is AsyncLoading ? null : _handleSubmit,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.secondaryColor,
+                backgroundColor: AppColors.secondary,
               ),
               icon: const Icon(Icons.directions_bike_rounded),
               label: const Text('Sewa Sekarang'),
@@ -323,7 +322,7 @@ class _MotorSewaFormTabState extends ConsumerState<MotorSewaFormTab> {
             const SizedBox(height: 4),
             Row(
               children: [
-                const Icon(Icons.calendar_today, size: 14, color: AppTheme.secondaryColor),
+                const Icon(Icons.calendar_today, size: 14, color: AppColors.secondary),
                 const SizedBox(width: 6),
                 Flexible(child: Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600))),
               ],

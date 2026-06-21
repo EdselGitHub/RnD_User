@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/motor/providers/motor_provider.dart';
 import 'package:rnd_proj/widgets/shared_widgets.dart';
@@ -36,18 +36,18 @@ class MotorListTab extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Summary card
+              //summary card
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFE8A838), Color(0xFFF5C563)],
+                    colors: [AppColors.secondary, AppColors.secondaryLight],
                   ),
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFE8A838).withValues(alpha: 0.3),
+                      color: AppColors.secondary.withValues(alpha: 0.3),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
@@ -78,7 +78,7 @@ class MotorListTab extends ConsumerWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Jelajahi Bali dengan kendaraan roda dua',
+                          'Jelajahi Bali dengan Motor',
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 12,
@@ -92,19 +92,19 @@ class MotorListTab extends ConsumerWidget {
 
               const SizedBox(height: 24),
 
-              // Available motors
+              //motor tersedia
               if (available.isNotEmpty) ...[
                 const Row(
                   children: [
                     Icon(Icons.check_circle_rounded,
-                        color: AppTheme.successColor, size: 20),
+                        color: AppColors.success, size: 20),
                     SizedBox(width: 8),
                     Text(
                       'Tersedia untuk Disewa',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
@@ -119,12 +119,12 @@ class MotorListTab extends ConsumerWidget {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppTheme.secondaryColor
+                                color: AppColors.secondary
                                     .withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               child: const Icon(Icons.two_wheeler_rounded,
-                                  color: AppTheme.secondaryColor, size: 28),
+                                  color: AppColors.secondary, size: 28),
                             ),
                             const SizedBox(width: 14),
                             Expanded(
@@ -142,7 +142,7 @@ class MotorListTab extends ConsumerWidget {
                                   Text(
                                     '${Helpers.formatCurrency(motor.harga)} / hari',
                                     style: const TextStyle(
-                                      color: AppTheme.secondaryColor,
+                                      color: AppColors.secondary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
                                     ),
@@ -158,7 +158,7 @@ class MotorListTab extends ConsumerWidget {
                                   size: 18),
                               label: const Text('Sewa'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppTheme.secondaryColor,
+                                backgroundColor: AppColors.secondary,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 10),
                               ),
@@ -169,20 +169,20 @@ class MotorListTab extends ConsumerWidget {
                     )),
               ],
 
-              // Rented motors
+              //motor disewa
               if (rented.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 const Row(
                   children: [
                     Icon(Icons.do_not_disturb_rounded,
-                        color: AppTheme.warningColor, size: 20),
+                        color: AppColors.warning, size: 20),
                     SizedBox(width: 8),
                     Text(
                       'Sedang Disewa',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
@@ -195,12 +195,12 @@ class MotorListTab extends ConsumerWidget {
                         leading: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppTheme.warningColor
+                            color: AppColors.warning
                                 .withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: const Icon(Icons.two_wheeler_rounded,
-                              color: AppTheme.warningColor, size: 28),
+                              color: AppColors.warning, size: 28),
                         ),
                         title: Text(motor.nama,
                             style:

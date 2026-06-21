@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/drinks/providers/drinks_provider.dart';
 import 'package:rnd_proj/widgets/shared_widgets.dart';
@@ -37,18 +37,18 @@ class DrinksScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header banner
+                //header
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFE06356), Color(0xFFEF8A7E)],
+                      colors: [AppColors.accent, AppColors.accentLight],
                     ),
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFE06356).withValues(alpha: 0.3),
+                        color: AppColors.accent.withValues(alpha: 0.3),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -93,19 +93,19 @@ class DrinksScreen extends ConsumerWidget {
 
                 const SizedBox(height: 24),
 
-                // Available drinks
+                //minuman tersedia
                 if (availableDrinks.isNotEmpty) ...[
                   const Row(
                     children: [
                       Icon(Icons.local_cafe_rounded,
-                          color: AppTheme.accentColor, size: 20),
+                          color: AppColors.accent, size: 20),
                       SizedBox(width: 8),
                       Text(
                         'Menu Tersedia',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppTheme.textPrimary,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ],
@@ -117,20 +117,20 @@ class DrinksScreen extends ConsumerWidget {
                       )),
                 ],
 
-                // Out of stock
+                //stok habis
                 if (outOfStock.isNotEmpty) ...[
                   const SizedBox(height: 20),
                   const Row(
                     children: [
                       Icon(Icons.remove_shopping_cart_rounded,
-                          color: AppTheme.textLight, size: 20),
+                          color: AppColors.textLight, size: 20),
                       SizedBox(width: 8),
                       Text(
                         'Stok Habis',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppTheme.textSecondary,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -162,11 +162,11 @@ class DrinksScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.accentColor.withValues(alpha: 0.12),
+                color: AppColors.accent.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(Icons.local_cafe,
-                  color: AppTheme.accentColor, size: 22),
+                  color: AppColors.accent, size: 22),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -184,7 +184,7 @@ class DrinksScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceColor,
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -192,11 +192,11 @@ class DrinksScreen extends ConsumerWidget {
                 children: [
                   const Text('Harga per item',
                       style: TextStyle(
-                          fontSize: 13, color: AppTheme.textSecondary)),
+                          fontSize: 13, color: AppColors.textSecondary)),
                   Text(Helpers.formatCurrency(minuman.harga),
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
-                          color: AppTheme.primaryColor)),
+                          color: AppColors.primary)),
                 ],
               ),
             ),
@@ -204,7 +204,7 @@ class DrinksScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceColor,
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -212,7 +212,7 @@ class DrinksScreen extends ConsumerWidget {
                 children: [
                   const Text('Stok tersedia',
                       style: TextStyle(
-                          fontSize: 13, color: AppTheme.textSecondary)),
+                          fontSize: 13, color: AppColors.textSecondary)),
                   Text('${minuman.stok}',
                       style: const TextStyle(fontWeight: FontWeight.w700)),
                 ],
@@ -260,7 +260,7 @@ class DrinksScreen extends ConsumerWidget {
                           );
                       if (success && context.mounted) {
                         Helpers.showSnackBar(
-                            context, 'Pesanan berhasil! Minuman segera diantar ☕');
+                            context, 'Pesanan berhasil! ☕');
                       }
                     },
                   },
@@ -299,13 +299,13 @@ class _DrinkCard extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: isOutOfStock
-                    ? AppTheme.textLight.withValues(alpha: 0.12)
-                    : AppTheme.accentColor.withValues(alpha: 0.12),
+                    ? AppColors.textLight.withValues(alpha: 0.12)
+                    : AppColors.accent.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(
                 Icons.local_cafe_rounded,
-                color: isOutOfStock ? AppTheme.textLight : AppTheme.accentColor,
+                color: isOutOfStock ? AppColors.textLight : AppColors.accent,
                 size: 28,
               ),
             ),
@@ -319,15 +319,15 @@ class _DrinkCard extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: isOutOfStock
-                              ? AppTheme.textLight
-                              : AppTheme.textPrimary)),
+                              ? AppColors.textLight
+                              : AppColors.textPrimary)),
                   const SizedBox(height: 4),
                   Text(
                     Helpers.formatCurrency(drink.harga),
                     style: TextStyle(
                       color: isOutOfStock
-                          ? AppTheme.textLight
-                          : AppTheme.primaryColor,
+                          ? AppColors.textLight
+                          : AppColors.primary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -339,8 +339,8 @@ class _DrinkCard extends StatelessWidget {
                             horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
                           color: isOutOfStock
-                              ? AppTheme.errorColor.withValues(alpha: 0.15)
-                              : AppTheme.successColor.withValues(alpha: 0.15),
+                              ? AppColors.error.withValues(alpha: 0.15)
+                              : AppColors.success.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -351,8 +351,8 @@ class _DrinkCard extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: isOutOfStock
-                                ? AppTheme.errorColor
-                                : AppTheme.successColor,
+                                ? AppColors.error
+                                : AppColors.success,
                           ),
                         ),
                       ),
@@ -367,7 +367,7 @@ class _DrinkCard extends StatelessWidget {
                 icon: const Icon(Icons.add_shopping_cart_rounded, size: 18),
                 label: const Text('Pesan'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.accentColor,
+                  backgroundColor: AppColors.accent,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 14, vertical: 10),
                 ),

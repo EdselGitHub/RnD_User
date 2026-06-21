@@ -24,10 +24,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void _confirmPayment() async {
     setState(() => _isProcessing = true);
     try {
-      // Simulate network delay
+      //simulasi ada delay proses
       await Future.delayed(const Duration(seconds: 1));
       
-      // Execute the actual saving logic passed from the form
+      //Execute logika simpan
       await widget.onPaymentSuccess();
       
       if (mounted) {
@@ -38,7 +38,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             backgroundColor: AppTheme.successColor,
           ),
         );
-        // PaymentScreen is usually popped by the navigator or here
+        //payment screen biasanya di pop oleh navigator atau disini
         Navigator.pop(context);
       }
     } catch (e) {
@@ -96,7 +96,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             const SizedBox(height: 12),
             
-            // Cash Option
+            //pilihan cash
             _PaymentMethodCard(
               title: 'Tunai / Cash',
               icon: Icons.payments_outlined,
@@ -114,7 +114,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             const SizedBox(height: 12),
             
-            // BCA Option
+            //pilihan bca
             _PaymentMethodCard(
               title: 'Transfer Bank BCA',
               icon: Icons.account_balance_outlined,

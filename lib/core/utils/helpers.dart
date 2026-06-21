@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 class Helpers {
   Helpers._();
 
-  /// Format currency to Indonesian Rupiah
+  ///format currency to Indonesian Rupiah
   static String formatCurrency(double amount) {
     final formatter = NumberFormat.currency(
       locale: 'id_ID',
@@ -14,22 +14,22 @@ class Helpers {
     return formatter.format(amount);
   }
 
-  /// Format date to dd/MM/yyyy
+  ///format date to dd/MM/yyyy
   static String formatDate(DateTime date) {
     return DateFormat('dd/MM/yyyy').format(date);
   }
 
-  /// Format date to dd MMM yyyy
+  ///format date to dd MMM yyyy
   static String formatDateLong(DateTime date) {
     return DateFormat('dd MMM yyyy', 'id_ID').format(date);
   }
 
-  /// Format date and time
+  /// format date and time
   static String formatDateTime(DateTime dateTime) {
     return DateFormat('dd MMM yyyy, HH:mm').format(dateTime);
   }
 
-  /// Show snackbar
+  ///show snackbar
   static void showSnackBar(BuildContext context, String message,
       {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -41,7 +41,7 @@ class Helpers {
     );
   }
 
-  /// Show confirmation dialog
+  ///tunjukkan dialog konfirmasi
   static Future<bool> showConfirmDialog(
     BuildContext context, {
     required String title,
@@ -69,7 +69,7 @@ class Helpers {
     return result ?? false;
   }
 
-  /// Calculate number of days between two dates
+  /// Hitung jumlah hari antara dua tanggal
   static int calculateDays(DateTime checkin, DateTime checkout) {
     return checkout.difference(checkin).inDays;
   }

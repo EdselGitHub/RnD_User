@@ -13,13 +13,14 @@ class RuanganModel extends RuanganEntity {
 
   factory RuanganModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    final rawStatus = data['status'] as String? ?? 'tersedia';
     return RuanganModel(
       id: doc.id,
       nama: data['nama'] ?? '',
       harga: (data['harga'] ?? 0).toDouble(),
       hargaMingguan: (data['harga_mingguan'] ?? 0).toDouble(),
       hargaBulanan: (data['harga_bulanan'] ?? 0).toDouble(),
-      status: data['status'] ?? 'tersedia',
+      status: rawStatus.trim().toLowerCase(),
     );
   }
 

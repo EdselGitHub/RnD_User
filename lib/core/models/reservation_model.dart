@@ -17,14 +17,16 @@ class ReservasiModel extends ReservasiEntity {
     final data = doc.data() as Map<String, dynamic>;
     return ReservasiModel(
       id: doc.id,
-      tamuId: data['tamu_id'] ?? '',
+      tamuId: data['tamu_id'] is DocumentReference
+          ? (data['tamu_id'] as DocumentReference).id
+          : data['tamu_id']?.toString() ?? '',
       roomId: data['room_id'] is DocumentReference
           ? (data['room_id'] as DocumentReference).id
           : data['room_id']?.toString() ?? '',
       checkin: (data['checkin'] as Timestamp).toDate(),
       checkout: (data['checkout'] as Timestamp).toDate(),
       total: (data['total'] ?? 0).toDouble(),
-      status: data['status'] ?? 'aktif',
+      status: (data['status'] as String? ?? 'aktif').trim().toLowerCase(),
       createdAt: (data['created_at'] as Timestamp).toDate(),
     );
   }

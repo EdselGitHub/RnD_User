@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/theme/app_theme.dart';
+import 'package:rnd_proj/core/constants/app_constants.dart';
 import 'package:rnd_proj/core/utils/helpers.dart';
 import 'package:rnd_proj/features/reservation/providers/reservation_provider.dart';
 import 'package:rnd_proj/widgets/shared_widgets.dart';
@@ -40,12 +40,12 @@ class AvailableRoomsTab extends ConsumerWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF1A6B52), Color(0xFF2D9B75)],
+                    colors: [AppColors.primary, AppColors.primaryLight],
                   ),
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF1A6B52).withValues(alpha: 0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
@@ -87,14 +87,14 @@ class AvailableRoomsTab extends ConsumerWidget {
                 const Row(
                   children: [
                     Icon(Icons.check_circle_rounded,
-                        color: AppTheme.successColor, size: 20),
+                        color: AppColors.success, size: 20),
                     SizedBox(width: 8),
                     Text(
                       'Tersedia',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
@@ -109,12 +109,12 @@ class AvailableRoomsTab extends ConsumerWidget {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppTheme.successColor
+                                color: AppColors.success
                                     .withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(14),
                               ),
                               child: const Icon(Icons.king_bed_rounded,
-                                  color: AppTheme.successColor, size: 28),
+                                  color: AppColors.success, size: 28),
                             ),
                             const SizedBox(width: 14),
                             Expanded(
@@ -132,7 +132,7 @@ class AvailableRoomsTab extends ConsumerWidget {
                                   Text(
                                     '${Helpers.formatCurrency(room.hargaBulanan)} / bulan',
                                     style: const TextStyle(
-                                      color: AppTheme.primaryColor,
+                                      color: AppColors.primary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
                                     ),

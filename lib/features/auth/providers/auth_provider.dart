@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rnd_proj/core/datasources/firebase/auth_firebase_service.dart';
+import 'package:rnd_proj/core/services/auth_firebase_service.dart';
 import 'package:rnd_proj/core/models/user_model.dart';
 
 final authServiceProvider = Provider<AuthFirebaseService>((ref) {

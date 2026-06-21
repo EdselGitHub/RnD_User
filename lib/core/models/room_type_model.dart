@@ -6,7 +6,7 @@ class RoomTypeModel {
   final String bed;
   final String image;
   final List<String> amenities;
-  final List<String> images; // placeholder for images
+  final List<String> images; //placeholder untuk images
 
   const RoomTypeModel({
     required this.title,

@@ -6,13 +6,17 @@ import 'package:rnd_proj/core/constants/app_constants.dart';
 class DrinksFirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<MinumanModel>> streamMinuman() {
-    return _firestore
+  Stream<List<MinumanModel>> streamMinuman() async* {
+    final snapshots = _firestore
         .collection(AppConstants.minumanCollection)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => MinumanModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<MinumanModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(MinumanModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> updateStock(String minumanId, int newStock) async {
@@ -29,19 +33,24 @@ class DrinksFirebaseService {
     return doc.id;
   }
 
-  Stream<List<MinumanTransaksiModel>> streamMinumanTransaksi() {
-    return _firestore
+  Stream<List<MinumanTransaksiModel>> streamMinumanTransaksi() async* {
+    final snapshots = _firestore
         .collection(AppConstants.minumanTransaksiCollection)
         .orderBy('tanggal', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => MinumanTransaksiModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<MinumanTransaksiModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(MinumanTransaksiModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> addTransaksiKeuangan({
     required double jumlah,
     String userId = '',
+    String deskripsi = 'Pembelian Minuman',
   }) async {
     await _firestore
         .collection(AppConstants.transaksiKeuanganCollection)
@@ -51,6 +60,7 @@ class DrinksFirebaseService {
       'tipe': 'income',
       'tanggal': Timestamp.now(),
       'user_id': userId,
+      'deskripsi': deskripsi,
     });
   }
 }

@@ -5,14 +5,18 @@ import 'package:rnd_proj/core/constants/app_constants.dart';
 class FinanceFirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<TransaksiKeuanganModel>> streamTransaksi() {
-    return _firestore
+  Stream<List<TransaksiKeuanganModel>> streamTransaksi() async* {
+    final snapshots = _firestore
         .collection(AppConstants.transaksiKeuanganCollection)
         .orderBy('tanggal', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => TransaksiKeuanganModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<TransaksiKeuanganModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(TransaksiKeuanganModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> addTransaksi(TransaksiKeuanganModel transaksi) async {

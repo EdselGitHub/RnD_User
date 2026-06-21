@@ -1,48 +1,48 @@
-/// Field name constants for Firestore documents
+///field name contant firestore
 class FirestoreFields {
   FirestoreFields._();
 
-  // Common
+  //common
   static const String id = 'id';
   static const String status = 'status';
   static const String createdAt = 'created_at';
 
-  // Users
+  //user
   static const String name = 'name';
   static const String email = 'email';
 
-  // Tamu
+  //tamu
   static const String nama = 'nama';
   static const String noHp = 'no_hp';
 
-  // Ruangan
+  //ruangan
   static const String harga = 'harga';
 
-  // Reservasi
+  //reservasi
   static const String tamuId = 'tamu_id';
   static const String roomId = 'room_id';
   static const String checkin = 'checkin';
   static const String checkout = 'checkout';
   static const String total = 'total';
 
-  // Motor
+  //motor
   static const String motorId = 'motor_id';
   static const String tanggal = 'tanggal';
 
-  // Laundry
+  //laundry
   static const String jenis = 'jenis';
 
-  // Room Service
+  //room Service
   static const String jadwal = 'jadwal';
 
-  // Minuman
+  //minuman
   static const String stok = 'stok';
 
-  // Minuman Transaksi
+  //minuman Transaksi
   static const String minumanId = 'minuman_id';
   static const String qty = 'qty';
 
-  // Transaksi Keuangan
+  //transaksi Keuangan
   static const String kategori = 'kategori';
   static const String jumlah = 'jumlah';
   static const String tipe = 'tipe';

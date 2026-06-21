@@ -19,7 +19,7 @@ class RoomTypeDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Carousel (Placeholder)
+            //carousel gambar/ image placeholder
             SizedBox(
               height: 250,
               child: PageView.builder(
@@ -89,7 +89,7 @@ class RoomTypeDetailScreen extends StatelessWidget {
                   
                   const SizedBox(height: 24),
                   
-                  // Info Cards
+                  //info card
                   Row(
                     children: [
                       _buildInfoCard(Icons.layers_rounded, roomType.floor),
@@ -111,7 +111,7 @@ class RoomTypeDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   
-                  // Amenities List
+                  //fasilitas
                   ...roomType.amenities.map((amenity) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Row(

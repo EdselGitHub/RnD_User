@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rnd_proj/core/datasources/firebase/motor_firebase_service.dart';
+import 'package:rnd_proj/core/services/motor_firebase_service.dart';
 import 'package:rnd_proj/core/models/motor_model.dart';
 import 'package:rnd_proj/core/models/motor_rental_model.dart';
 import 'package:rnd_proj/core/constants/app_constants.dart';
@@ -14,36 +15,62 @@ final motorStreamProvider = StreamProvider<List<MotorModel>>((ref) async* {
   final rentalsAsync = ref.watch(motorSewaStreamProvider);
 
   await for (final motorsData in service.streamMotor()) {
-    var motors = motorsData.where((m) => m.status != 'dihapus').toList();
+    //mengambil data motor yang tidak dihapus menggunakan loop
+    final List<MotorModel> motorsList = [];
+    for (final m in motorsData) {
+      if (m.status != 'dihapus') {
+        motorsList.add(m);
+      }
+    }
+
+    final List<MotorModel> finalMotors = [];
 
     if (rentalsAsync is AsyncData) {
       final rentals = rentalsAsync.value!;
       final now = DateTime.now();
+      final today = DateUtils.dateOnly(now);
 
-      motors = motors.map((motor) {
-        if (motor.status == 'maintenance') return motor;
+      //mengecek status rental menggunakan loop 
+      for (final motor in motorsList) {
+        if (motor.status == 'maintenance') {
+          finalMotors.add(motor);
+          continue;
+        }
 
-        bool isOccupiedNow = rentals.any((rental) {
-          if (rental.status != AppConstants.statusAktif) return false;
-          if (rental.motorId != motor.id) return false;
+        bool isOccupiedNow = false;
+        for (final rental in rentals) {
+          final rentalStart = DateUtils.dateOnly(rental.tanggal);
+          final rentalEnd = DateUtils.dateOnly(rental.tanggalKembali);
+          if (rental.status == AppConstants.statusAktif &&
+              rental.motorId == motor.id &&
+              today.compareTo(rentalStart) >= 0 &&
+              today.compareTo(rentalEnd) < 0) {
+            isOccupiedNow = true;
+            break; // Jika sudah cocok, hentikan pencarian
+          }
+        }
 
-          return now.compareTo(rental.tanggal) >= 0 &&
-              now.compareTo(rental.tanggalKembali) < 0;
-        });
-
-        return motor.copyWith(
+        finalMotors.add(motor.copyWith(
           status: isOccupiedNow ? AppConstants.statusDisewa : AppConstants.statusTersedia,
-        );
-      }).toList();
+        ));
+      }
+    } else {
+      finalMotors.addAll(motorsList);
     }
-    yield motors;
+    yield finalMotors;
   }
 });
 
 final availableMotorProvider = Provider<AsyncValue<List<MotorModel>>>((ref) {
-  return ref.watch(motorStreamProvider).whenData(
-        (motors) => motors.where((m) => m.status == AppConstants.statusTersedia).toList(),
-      );
+  return ref.watch(motorStreamProvider).whenData((motors) {
+    final List<MotorModel> list = [];
+    for (final m in motors) {
+      if (m.status == AppConstants.statusTersedia) {
+        list.add(m);
+      }
+    }
+    return list;
+  });
 });
 
 final motorSewaStreamProvider = StreamProvider<List<MotorSewaModel>>((ref) {
@@ -83,7 +110,11 @@ class MotorNotifier extends AsyncNotifier<void> {
       ));
 
       await _service.updateMotorStatus(motorId, AppConstants.statusDisewa);
-      await _service.addTransaksiKeuangan(jumlah: total, userId: userId);
+      await _service.addTransaksiKeuangan(
+        jumlah: total,
+        userId: userId,
+        deskripsi: 'Sewa Motor [$tamuId]',
+      );
 
       state = const AsyncData(null);
       return true;

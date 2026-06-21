@@ -21,7 +21,7 @@ class RoomServiceModel extends RoomServiceEntity {
       status: data['status'] ?? 'menunggu',
       createdAt: data.containsKey('created_at') 
           ? (data['created_at'] as Timestamp).toDate()
-          : (data['jadwal'] as Timestamp).toDate(), // fallback for old data
+          : (data['jadwal'] as Timestamp).toDate(), //fallback untuk data lama
     );
   }
 

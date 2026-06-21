@@ -6,21 +6,31 @@ import 'package:rnd_proj/core/constants/app_constants.dart';
 class MotorFirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<MotorModel>> streamMotor() {
-    return _firestore
+  Stream<List<MotorModel>> streamMotor() async* {
+    final snapshots = _firestore
         .collection(AppConstants.motorCollection)
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => MotorModel.fromFirestore(doc)).toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<MotorModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(MotorModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
-  Stream<List<MotorModel>> streamAvailableMotor() {
-    return _firestore
+  Stream<List<MotorModel>> streamAvailableMotor() async* {
+    final snapshots = _firestore
         .collection(AppConstants.motorCollection)
         .where('status', isEqualTo: AppConstants.statusTersedia)
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => MotorModel.fromFirestore(doc)).toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<MotorModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(MotorModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> updateMotorStatus(String motorId, String status) async {
@@ -37,14 +47,18 @@ class MotorFirebaseService {
     return doc.id;
   }
 
-  Stream<List<MotorSewaModel>> streamMotorSewa() {
-    return _firestore
+  Stream<List<MotorSewaModel>> streamMotorSewa() async* {
+    final snapshots = _firestore
         .collection(AppConstants.motorSewaCollection)
         .orderBy('tanggal', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => MotorSewaModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<MotorSewaModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(MotorSewaModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> updateMotorSewaStatus(String id, String status) async {
@@ -57,6 +71,7 @@ class MotorFirebaseService {
   Future<void> addTransaksiKeuangan({
     required double jumlah,
     String userId = '',
+    String deskripsi = 'Penyewaan Motor',
   }) async {
     await _firestore
         .collection(AppConstants.transaksiKeuanganCollection)
@@ -66,6 +81,7 @@ class MotorFirebaseService {
       'tipe': 'income',
       'tanggal': Timestamp.now(),
       'user_id': userId,
+      'deskripsi': deskripsi,
     });
   }
 }

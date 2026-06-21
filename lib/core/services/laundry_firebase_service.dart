@@ -12,13 +12,17 @@ class LaundryFirebaseService {
     return doc.id;
   }
 
-  Stream<List<LaundryModel>> streamLaundry() {
-    return _firestore
+  Stream<List<LaundryModel>> streamLaundry() async* {
+    final snapshots = _firestore
         .collection(AppConstants.laundryCollection)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => LaundryModel.fromFirestore(doc))
-            .toList());
+        .snapshots();
+    await for (final snapshot in snapshots) {
+      final List<LaundryModel> list = [];
+      for (final doc in snapshot.docs) {
+        list.add(LaundryModel.fromFirestore(doc));
+      }
+      yield list;
+    }
   }
 
   Future<void> updateLaundryStatus(String id, String status) async {
@@ -31,6 +35,7 @@ class LaundryFirebaseService {
   Future<void> addTransaksiKeuangan({
     required double jumlah,
     String userId = '',
+    String deskripsi = 'Layanan Laundry',
   }) async {
     await _firestore
         .collection(AppConstants.transaksiKeuanganCollection)
@@ -40,6 +45,7 @@ class LaundryFirebaseService {
       'tipe': 'income',
       'tanggal': Timestamp.now(),
       'user_id': userId,
+      'deskripsi': deskripsi,
     });
   }
 }
